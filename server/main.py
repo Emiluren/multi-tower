@@ -10,16 +10,16 @@ async def index(request):
     with open('../index.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
-@sio.on('connect', namespace='/chat')
+@sio.on('connect')
 def connect(sid, environ):
     print("connect ", sid)
 
-@sio.on('chat message', namespace='/chat')
+@sio.on('chat message')
 async def message(sid, data):
     print("message ", data)
-    await sio.emit('reply', room=sid)
+    await sio.emit('chat message', data=data, room=sid)
 
-@sio.on('disconnect', namespace='/chat')
+@sio.on('disconnect')
 def disconnect(sid):
     print('disconnect ', sid)
 
