@@ -11,7 +11,7 @@ var config = {
 
 var game = new Phaser.Game(config);
 
-var socket = io();
+var socket = io({ query: { name: "malcolm" } });
 
 function preload() {
     game.load.image('tower', 'assets/tower.png')

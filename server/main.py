@@ -3,6 +3,7 @@ import player
 import socketio
 import threading
 import time
+import urllib.parse
 
 TICK_TIME = 1
 
@@ -37,7 +38,8 @@ async def index(request):
 @sio.on('connect')
 def connect(sid, environ):
     board_lock.acquire()
-    print("connect ", sid)
+    query = urllib.parse.parse_qs(environ['QUERY_STRING'])
+    print("connect ", sid, query)
     p = player.Player()
     players[sid] = p
     board_lock.release()
