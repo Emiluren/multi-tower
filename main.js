@@ -8,6 +8,9 @@ function start() {
   // Init three js
   initGraphics();
 
+  // Populate world
+  populate();
+
   // Set up game
   initControls();
 
