@@ -6,6 +6,8 @@
     background-color: #0d0e11;
     opacity: 0.7;
     color:white;
+    z-index: 10;
+    position:absolute;
 }
 
 #player_login {
@@ -20,4 +22,13 @@
 
 .sidebar {
 
+}
+
+#healthbar_container {
+    position:absolute;
+    background: #630000;
+    margin:10px;
+    left: 50%;
+    transform: translate(-50%);
+    width:20%;
 }
