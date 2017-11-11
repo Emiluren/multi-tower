@@ -1,6 +1,7 @@
+#!/usr/bin/env python3
 from aiohttp import web
 import vec
-import entities 
+import entities
 import socketio
 import threading
 import time
@@ -60,7 +61,7 @@ def assign_castle(player):
 
 async def index(request):
     """Serve the client-side application."""
-    with open('../index.html') as f:
+    with open('../public/index.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
 @sio.on('connect')
