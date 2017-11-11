@@ -119,8 +119,11 @@ async def actually_fire_the_damn_tower(minion_id, tower):
 
 
 def kill_minion_locally(minion_id):
-    board_remove_entity(minion_id)
-    del minions[minion_id]
+    print(board)
+    if board_try_remove_entity(minion_id):
+        del minions[minion_id]
+    else:
+        print('Wtf ')
 
 
 def is_castle_position_free(pos):
@@ -143,28 +146,35 @@ def board_add_entity(entity):
     if pos in board:
         board[pos].append(uid)
     else:
-        board[pos] = [pos]
+        board[pos] = [uid]
     board_entities[uid] = entity
 
 
 def board_move_entity(uid, dest_pos):
-    board_remove_entity(uid)
+    board_try_remove_entity(uid)
     board_add_entity(uid, dest_pos)
     x, y = dest_pos
     board_entities[uid].x = x
     board_entities[uid].y = y
 
 
-def board_remove_entity(uid):
+def board_try_remove_entity(uid):
+    """
+    Returns True if successful, false if not
+    """
     found_pos = None
     for pos, ids in board.items():
         if uid in ids:
             found_pos = pos
-    assert found_pos is not None
+            break
+    if found_pos is None:
+        raise Exception("ID: ", uid)
+        return False
     board[found_pos].remove(uid)
     if not board[found_pos]:
         del board[found_pos]
     del board_entities[uid]
+    return True
 
 
 def generate_castle_position():
