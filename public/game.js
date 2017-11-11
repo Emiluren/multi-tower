@@ -13,6 +13,11 @@ var game = new Phaser.Game(config);
 
 var socket = io({ query: { name: "malcolm" } });
 
+socket.on('entity_created', function(msg) {
+    console.log(msg);
+});
+
+
 function preload() {
     game.load.image('tower', 'assets/tower.png')
 }
@@ -22,16 +27,14 @@ function create() {
     game.add.sprite(0, 0, 'tower');
     game.camera.bounds = null;
     game.camera.focusOnXY(0, 0);
-
-    socket.on('chat message', function(msg) {
-        console.log(msg);
-    });
 }
 
 var origDragPoint = null;
 
+console.log('nej');
 function update() {
     //socket.emit('chat message', "test");
+    console.log('nej');
     if (game.input.activePointer.isDown) {
         if (origDragPoint) {
             game.camera.x += origDragPoint.x - game.input.activePointer.position.x;

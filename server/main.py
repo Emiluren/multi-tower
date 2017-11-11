@@ -43,14 +43,14 @@ def timer_tick():
 def generate_castle_position():
     if not castles:
         return (0, 0)
-    r1 = random.randint(-1, 1)
-    r2 = random.randint(-1, 1)
-    direction = (r1*SPAWN_DISTANCE, r2*SPAWN_DISTANCE)
-    for pos in castles:
-        new_pos = vec.add(direction, pos)
-        if not new_pos in castles:
-            return new_pos
-    raise Exception('WTF Y U NO GENERATE POS')
+    while True:
+        r1 = random.randint(-1, 1)
+        r2 = random.randint(-1, 1)
+        direction = (r1*SPAWN_DISTANCE, r2*SPAWN_DISTANCE)
+        for pos in castles:
+            new_pos = vec.add(direction, pos)
+            if not new_pos in castles:
+                return new_pos
 
 
 async def assign_castle(player):
