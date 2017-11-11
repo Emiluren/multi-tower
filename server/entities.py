@@ -1,4 +1,5 @@
 import random
+import uuid
 
 MAX_HEALTH = 100
 
@@ -9,13 +10,23 @@ class Player:
         self.sids = sids
 
 
-class Castle:
+class Entity:
 
-    def __init__(self, player, uid):
-        self.player = player
+    def __init__(self, x, y, typ, player_name):
+        self.x = x
+        self.y = y
+        self.typ = typ
+        self.player_name = player_name
         self.health = MAX_HEALTH
-        self.uid = uid
+        self.uid = uuid.uuid4().hex
         self.level = 1
+
+    def to_list(self):
+        return [self.uid, self.x, self.y, 
+                self.typ, self.health, self.level, self.player_name]
+
+    def position_tuple(self):
+        return (self.x, self.y)
 
 
     def __repr__(self):

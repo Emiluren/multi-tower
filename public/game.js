@@ -27,7 +27,7 @@ function new_player(json_msg) {
 
 function board_add_entity(id, pos) {
     if (pos in board) {
-        board[pos].append(id);
+        board[pos].push(id);
     } else {
         board[pos] = [pos];
     }
@@ -57,7 +57,7 @@ function entity_created(json_msg) {
         level: msg[5], player_name: msg[6]};
     entities[id] = entity;
     board_add_entity(id, x, y);
-    game.add.sprite(entity.x, entity.y, 'tower');
+    game.add.sprite(entity.x * TILE_SIZE, entity.y * TILE_SIZE, 'tower');
 }
 
 function entity_destroyed(msg) {
@@ -99,7 +99,7 @@ function create() {
     game.stage.backgroundColor = "#eed85d";
     game.camera.bounds = null;
     game.camera.focusOnXY(0, 0);
-    game.input.onTap.add(create_tower, this);
+    game.input.onTap.add(request_create_tower, this);
     socket = io({ query: { name: 'hejhej' } });
     socket.on('entity_created', entity_created);
     socket.on('entity_destroyed', entity_destroyed);
