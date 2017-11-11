@@ -33,8 +33,13 @@ board_lock = threading.Lock()
 
 # player_name -> Entity
 castles = {}
+
 # uuid -> Entity
 board_entities = {}
+
+# pos -> [uuid]
+board = {}
+
 # name -> Player
 players = {}
 
@@ -50,6 +55,36 @@ def is_castle_position_free(pos):
         if x == castle.x and y == castle.y:
             return False
     return True
+
+
+def board_add_entity(entity):
+    pos = entity.position_tuple()
+    uid = entity.uid
+    if pos in board:
+        board[pos].append(uid)
+    else:
+        board[pos] = [pos]
+    board_entities[uid] = entity
+
+
+def board_move_entity(uid, dest_pos):
+    board_remove_entity(uid)
+    board_add_entity(uid, dest_pos)
+    x, y = dest_pos
+    board_entities[uid].x = x
+    board_entities[uid].y = y
+
+
+def board_remove_entity(uid):
+    found_pos = None
+    for pos, ids in board.items():
+        if uid in ids:
+            found_pos = pos
+    assert found_pos is not None
+    board[found_pos].remove(uid)
+    if not board[found_pos]:
+        del board[found_pos]
+    del board_entities[uid]
 
 
 def generate_castle_position():
@@ -70,7 +105,7 @@ async def assign_castle(player_name):
     x, y = generate_castle_position()
     castle = entities.Entity(x, y, 'castle', player_name)
     castles[player_name] = castle
-    board_entities[castle.uid] = castle
+    board_add_entity(castle)
     await broadcast_message('entity_created', [castle.uid, x, y, 'castle', 100, 1, player_name])
 
 
@@ -110,10 +145,10 @@ async def on_request_tower(sid, data):
     print("Tower requested: ", data)
 
     x, y, typ = data
-
     player_name = players[sid]
-
     tower = entities.Entity(x, y, typ, player_name)
+    board_add_entity(tower)
+
     await broadcast_message('entity_created', tower.to_list())
 
 
