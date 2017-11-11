@@ -1,10 +1,15 @@
 from aiohttp import web
-import player
+import vec
+import entities 
 import socketio
 import threading
 import time
+import urllib.parse
+import random
 
 TICK_TIME = 1
+
+SPAWN_DISTANCE = 50;
 
 class MainThread(threading.Thread):
 
@@ -23,11 +28,35 @@ sio.attach(app)
 
 board_lock = threading.Lock()
 
+castles = {}
 board = {}
 players = {}
 
 def timer_tick():
-    print(players)
+    board_lock.acquire()
+    print(board)
+    board_lock.release()
+
+
+def generate_castle_position():
+    if not castles:
+        return (0, 0)
+    r1 = random.randint(-1, 1)
+    r2 = random.randint(-1, 1)
+    direction = (r1*SPAWN_DISTANCE, r2*SPAWN_DISTANCE)
+    for pos in castles:
+        new_pos = vec.add(direction, pos)
+        if not new_pos in castles:
+            return new_pos
+    raise Exception('WTF Y U NO GENERATE POS')
+
+
+def assign_castle(player):
+    pos = generate_castle_position()
+    castle = entities.Castle(player)
+    castles[pos] = castle
+    board[pos] = castle
+
 
 async def index(request):
     """Serve the client-side application."""
@@ -37,9 +66,11 @@ async def index(request):
 @sio.on('connect')
 def connect(sid, environ):
     board_lock.acquire()
-    print("connect ", sid)
-    p = player.Player()
+    query = urllib.parse.parse_qs(environ['QUERY_STRING'])
+    print("connect ", sid, query)
+    p = entities.Player()
     players[sid] = p
+    assign_castle(p)
     board_lock.release()
 
 @sio.on('chat message')
