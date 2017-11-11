@@ -2,12 +2,14 @@ import random
 import uuid
 
 MAX_HEALTH = 100
+SPAWN_INTERVAL = 10
 
 class Player:
 
     def __init__(self, name, sids):
         self.name = name
         self.sids = sids
+        self.spawn_timer = SPAWN_INTERVAL
 
 
 class Entity:

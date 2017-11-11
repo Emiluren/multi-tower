@@ -41,10 +41,28 @@ board = {}
 # name -> Player
 players = {}
 
+async def update_player(player):
+    player.spawn_timer -= 1
+    if player.spawn_timer <= 0:
+        player.spawn_timer = 0
+
+        castle = castles[player.name]
+
+        # TODO: find optimal side to spawn on given target
+        spawn_x = castle.x + 1
+        spawn_y = castle.y
+
+        minion = entities.Entity(x, y, "minion", player.name)
+        board_add_entity(tower)
+
+        await broadcast_message('entity_created', tower.to_list())
+
+
 async def timer_tick():
     board_lock.acquire()
-    print(board_entities)
     await send_tick()
+    for player_name in players:
+        await update_player(players[player_name])
     board_lock.release()
 
 
@@ -93,7 +111,7 @@ def generate_castle_position():
         r1 = random.randint(-1, 1)
         r2 = random.randint(-1, 1)
         direction = (r1*SPAWN_DISTANCE, r2*SPAWN_DISTANCE)
-        for castle in castles.values(): 
+        for castle in castles.values():
             pos = castle.position_tuple()
             new_pos = vec.add(direction, pos)
             if is_castle_position_free(pos):
@@ -170,18 +188,17 @@ app.router.add_static('/', '../public')
 async def start_background_tasks(app):
     app['ticker'] = app.loop.create_task(run(app))
 
+
 async def cleanup(app):
     app['ticker'].cancel()
     await app['ticker']
 
 
 def start_server():
-    try:
-        app.on_startup.append(start_background_tasks)
-        app.on_cleanup.append(cleanup)
-        web.run_app(app)
-    except KeyboardInterrupt:
-        t.stop_flag = True
+    app.on_startup.append(start_background_tasks)
+    app.on_cleanup.append(cleanup)
+    web.run_app(app)
+
 
 if __name__ == '__main__':
     start_server()
