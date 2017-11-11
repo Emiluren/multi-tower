@@ -1,3 +1,5 @@
+var adding = false;
+
 var raycaster = new THREE.Raycaster();
 var mouse_pos = new THREE.Vector2();
 

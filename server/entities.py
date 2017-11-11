@@ -9,6 +9,15 @@ TOWER_FREQUENCIES = {
     'tower_arrows' : 10
 }
 
+# Controls the range of each tower
+TOWER_RANGES = {
+    'tower_arrows': 5
+}
+
+TOWER_DAMAGES = {
+    'tower_arrows': 10
+}
+
 class Player:
 
     def __init__(self, name, sids):

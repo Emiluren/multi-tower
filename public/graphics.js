@@ -47,3 +47,7 @@ function initGraphics() {
   
   THREEx.WindowResize(renderer, camera);
 }
+
+function showPreview(type){
+
+}
