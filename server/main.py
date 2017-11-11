@@ -13,7 +13,7 @@ import pdb
 
 TICK_TIME = 1
 
-SPAWN_DISTANCE = 50;
+SPAWN_DISTANCE = 50
 
 class MainThread(threading.Thread):
 
@@ -61,7 +61,7 @@ async def assign_castle(player):
     castles[pos] = castle
     board[pos] = castle
     x, y = pos
-    await broadcast_message('entity_created', [x, y, 'castle', 100, 1, castle.uid])
+    await broadcast_message('entity_created', [castle.uid, x, y, 'castle', 100, 1, player.name])
 
 
 async def broadcast_message(message_type, data, sid=None):
