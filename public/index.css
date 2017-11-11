@@ -1,0 +1,23 @@
+.body {
+    margin: 0px;
+}
+
+.dark_overlay {
+    background-color: #0d0e11;
+    opacity: 0.7;
+    color:white;
+}
+
+#player_login {
+    text-align:center;
+}
+
+#sidebar_toggle {
+    position:absolute;
+    left:260px;
+    z-index:10;
+}
+
+.sidebar {
+
+}

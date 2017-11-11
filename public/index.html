@@ -1,13 +1,19 @@
 <!doctype html>
 <html>
-  <head>
+  <link>
     <title>Tower game</title>
     <meta charset="utf8">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"></link>
-
     <script src="https://threejs.org/build/three.min.js"></script>
+
+    <!-- Debug-läge  -->
+    <script>var debug = false;</script>
+
+    <script src="ui.js"></script>
+    <link rel="stylesheet" href="index.css"></link>
     <script src="objloader.js"></script>
     <script src="world.js"></script>
     <script src="graphics.js"></script>
@@ -16,8 +22,8 @@
     <script src="game.js"></script>
   </head>
 
-  <body onload="start();" style="margin: 0px;">
-    <div class="ui basic modal" id ="player_login" style="text-align:center">
+  <body onload="start();">
+    <div class="ui basic modal" id ="player_login">
       <div class="ui huge input">
         <input id="player_name_text" type="text" placeholder="Enter name">
         <button id="player_name_submit" class="ui right labeled icon inverted olive button">
@@ -28,8 +34,8 @@
 
     </div>
 
-    <button class="ui black left toggle button" id="sidebar_toggle" style="position:absolute;left:260px; z-index:10;"> << </button>
-    <div class="ui sidebar left vertical inverted" style="background-color:#bbf1ff"> HÄR ÄR EN MASSA FIN TEXT</div>
+    <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>
+    <div class="ui dark_overlay wide sidebar left vertical"> HÄR ÄR EN MASSA FIN TEXT</div>
 
     <div class="pusher" id="container"></div>
 
@@ -38,40 +44,6 @@
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
   </body>
-
-  <script>
-      var debug = true;
-      $(document).ready(function(){
-          $('.sidebar')
-              .sidebar({
-                  closable: false,
-                  dimPage: false
-              })
-              .sidebar('setting', 'transition', 'overlay')
-              .sidebar('attach events','#sidebar_toggle')
-              .sidebar('toggle');
-
-          $('.ui.modal').modal('setting', 'closable', false);
-          if (!debug) $('.ui.modal').modal('show');
-
-          $("#sidebar_toggle").state({text: {inactive:'<<', active:'>>'}});
-          // THIS IS A REALLY UGLY WAY DO DO IT. IT SHOULD BE TRANSITIONING INSTEAD
-          setInterval(function () {
-              $("#sidebar_toggle").css("left", ($(".sidebar").position().left+$(".sidebar").width())+"px");
-          }, 10);
-      });
-
-      $('#player_name_submit').click(function () {
-          if ($('#player_name_text').val()){
-              console.log("Player "+$('#player_name_text').val()+" enters");
-              $('.ui.modal').modal('hide')
-          }
-      });
-
-
-
-
-  </script>
 
 </html>
 
