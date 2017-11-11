@@ -15,6 +15,7 @@ class Castle:
         self.player = player
         self.health = MAX_HEALTH
         self.uid = uid
+        self.level = 1
 
 
     def __repr__(self):

@@ -82,6 +82,7 @@ async def send_world_to_player(sid):
             y,
             "castle",
             castle.health,
+            castle.level,
             castle.player.name
         ]
         await broadcast_message('entity_created', data, sid)
