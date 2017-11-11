@@ -12,7 +12,7 @@ import json
 import traceback
 import pdb
 
-TICK_TIME = 1
+TICK_TIME = 0.1
 
 SPAWN_DISTANCE = 50
 
@@ -48,6 +48,9 @@ board = {}
 # name -> Player
 players = {}
 
+# uuid -> (Entity, ticks since last fired)
+towers = {}
+
 # uuid -> (Path)
 minions = {}
 
@@ -74,7 +77,32 @@ async def timer_tick():
     await send_tick()
     for player_name in players:
         await update_player(players[player_name])
+    for uid in towers:
+        tower, ticks = towers[uid]
+        ticks += TICK_TIME * \
+                entities.TOWER_FREQUENCIES[tower.typ] / tower.level
+        if ticks >= 1 / TICK_TIME:
+            await fire_tower_if_in_range(tower)
+            ticks = 0
+        towers[uid] = (tower, ticks)
+
     board_lock.release()
+
+
+async def fire_tower_if_in_range(tower):
+    tower_pos = tower.position_tuple()
+    tower_range = entities.TOWER_RANGES[tower.typ] * tower.level
+    for minion_id in minions:
+        minion_pos = board_entities[minion_id].position_tuple()
+        if vec.is_within_bounds(minion_pos, tower_pos, tower_range):
+            await actually_fire_the_damn_tower(minion_id, tower)
+            print('FIRE!')
+            return
+
+
+async def actually_fire_the_damn_tower(minion_id, tower):
+    board_entities[minion_id] -= tower.level * \
+            entities.TOWER_DAMAGES[tower.typ]
 
 
 def is_castle_position_free(pos):
@@ -193,6 +221,7 @@ async def on_request_tower(sid, data):
     player = find_player(sid)
     tower = entities.Entity(x, y, typ, player.name)
     board_add_entity(tower)
+    towers[tower.uid] = (tower, 0)
 
     await broadcast_message('entity_created', tower.to_list())
 

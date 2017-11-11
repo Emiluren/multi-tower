@@ -29,11 +29,12 @@ def mul(this, other):
     return (this_x * other, this_y * other)
 
 def length(this):
+    this_x, this_y = this
     return math.sqrt(this_x ** 2 + this_y ** 2)
 
 def is_within_bounds(this, center_point, size):
     """Checks whether this vector is within size distance from center_point"""
-    return this.distance_to(center_point) <= size
+    return distance_to(this, center_point) <= size
 
 def angle(this):
     this_x, this_y = this

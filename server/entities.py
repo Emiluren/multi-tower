@@ -4,6 +4,20 @@ import uuid
 MAX_HEALTH = 100
 SPAWN_INTERVAL = 10
 
+# Controls how fast each type of tower fires
+TOWER_FREQUENCIES = {
+    'tower_arrows' : 10
+}
+
+# Controls the range of each tower
+TOWER_RANGES = {
+    'tower_arrows': 5
+}
+
+TOWER_DAMAGES = {
+    'tower_arrows': 10
+}
+
 class Player:
 
     def __init__(self, name, sids):
