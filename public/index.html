@@ -1,12 +1,63 @@
 <!doctype html>
 <html>
-  <head>
+  <link>
     <title>Tower game</title>
-  </head>
-  <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
-    <script src="//cdn.jsdelivr.net/npm/phaser-ce@2.9.1"></script>
+    <meta charset="utf8">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"></link>
+    <script src="https://threejs.org/build/three.min.js"></script>
+
+    <!-- Debug mode  -->
+    <script>var debug = true;</script>
+
+    <script src="ui.js"></script>
+    <link rel="stylesheet" href="index.css"></link>
+
+    <script src="meshes.js"></script>
+    <script src="objloader.js"></script>
+    <script src="world.js"></script>
+    <script src="graphics.js"></script>
+    <script src="controls.js"></script>
+    <script src="network.js"></script>
+    <script src="main.js"></script>
     <script src="game.js"></script>
+  </head>
+
+  <!-- Player name modal -->
+  <body onload="start().then(start2);" style="margin: 0px;">
+    <div class="ui basic modal" id ="player_login">
+      <div class="ui huge input">
+        <input id="player_name_text" type="text" placeholder="Enter name">
+        <button id="player_name_submit" class="ui right labeled icon inverted olive button">
+          <i class="right arrow icon"></i>
+            Play!
+        </button>
+      </div>
+    </div>
+
+    <!-- Healthbar -->
+    <div class="ui dark_overlay small inverted green progress" id="healthbar_container" data-value="30" data-total="100">
+        <div class="bar"></div>
+        <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
+    </div>
+
+    <!-- Sidebar -->
+    <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>
+    <div class="ui dark_overlay wide sidebar left vertical">
+        <h3 class="ui header inverted">Section One</h3>
+        <div class="ui section divider inverted"></div>
+        <h3 class="ui header inverted">Section Two</h3>
+    </div>
+
+    <!-- three.js 3D rendering -->
+    <div class="pusher" id="container"></div>
+
+
+
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
   </body>
+
 </html>
