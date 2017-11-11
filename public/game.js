@@ -41,9 +41,7 @@ function update(delta) {
     // Raycast on mouse click
     $(document).click(function () {
         raycaster.setFromCamera( mouse_pos, camera );
-        console.log(mouse_pos);
         var intersects = raycaster.intersectObjects( scene.children );
-        console.log(intersects);
         for ( var i = 0; i < intersects.length; i++ ) {
             intersects[ i ].object.material.color.set( 0xff0000 );
         }
