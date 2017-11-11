@@ -3,6 +3,10 @@
   <head>
     <title>Tower game</title>
     <meta charset="utf8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"></link>
+    
     <script src="https://threejs.org/build/three.min.js"></script>
     <script src="https://mamboleoo.be/learnThree/demos/OBJLoader.js"></script>
     <script src="world.js"></script>
@@ -12,8 +16,21 @@
     <script src="game.js"></script>
   </head>
   <body onload="start();" style="margin: 0px;">
-    <div id="container"></div>
+    <div class="pusher" id="container"></div>
+    <div class="ui sidebar" style="background-color:red"> HÄR ÄR EN MASSA FIN TEXT</div>
+    
+    
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
   </body>
 </html>
+
+<script>
+    $(document).ready(function(){
+        $('.sidebar')
+            .sidebar({
+                overlay: true
+            })
+            //.sidebar('toggle');
+     });
+</script>
