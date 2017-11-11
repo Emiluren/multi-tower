@@ -1,5 +1,6 @@
 const TYPE_CASTLE = "castle";
 const TYPE_TOWER_ARROWS = "tower_arrows";
+const TYPE_MINION = "minion";
 
 var socket = null;
 
@@ -48,26 +49,30 @@ function entity_created(json_msg) {
     let type = msg[3];
     let x = msg[1];
     let y = msg[2];
-    let entity = {id: id, x: x, y: y, type: type, health: msg[4],
-        level: msg[5], player_name: msg[6]};
-    entities[id] = entity;
-    board_add_entity(id, x, y);
-
+    let m;
     switch(type) {
     case TYPE_TOWER_ARROWS:
-        console.log("TODO: create tower at " + [x, y])
-        var mesh = createMesh("tower");
-        mesh.position.set(x, 0, y);
-        scene.add(mesh);
+        m = createMesh("tower");
+        m.position.set(x, 0, y);
+        scene.add(m);
         break;
     case TYPE_CASTLE:
-        console.log("TODO: create castle at " + [x, y])
-        var mesh = createMesh("castle");
-        mesh.position.set(x, 0, y);
-        mesh.rotation.y = Math.PI / 2;
-        scene.add(mesh);
+        m = createMesh("castle");
+        m.position.set(x, 0, y);
+        m.rotation.y = Math.PI / 2;
+        scene.add(m);
+        break;
+    case TYPE_MINION:
+        m = createMesh("minion");
+        m.position.set(x, 0, y);
+        scene.add(m);
         break;
     }
+
+    let entity = {id: id, x: x, y: y, type: type, health: msg[4],
+        level: msg[5], player_name: msg[6], mesh: m};
+    entities[id] = entity;
+    board_add_entity(id, x, y);
 }
 
 function entity_destroyed(msg) {
