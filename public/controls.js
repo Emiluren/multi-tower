@@ -5,8 +5,8 @@ controls["up"] = ["w", ""];
 controls["down"] = ["s", ""];
 controls["left"] = ["a", ""];
 controls["right"] = ["d", ""];
-
-controls["fire"] = [" ", ""];
+controls["ascend"] = [" ", ""];
+controls["descend"] = ["x", ""];
 
 var evd = [];
 var evu = [];

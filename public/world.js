@@ -12,15 +12,17 @@ function populate() {
 
   // Light
   var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+  directionalLight.target = plane;
   scene.add( directionalLight );
 
   // load a resource
   loader.load(
   	// resource URL
-  	'public/assets/Castle.obj',
+  	'assets/Castle.obj',
   	// called when resource is loaded
   	function ( object ) {
       object.position.z -= 10;
+      object.position.y -= 2;
   		scene.add( object );
 
   	},
