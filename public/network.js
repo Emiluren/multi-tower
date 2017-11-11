@@ -52,10 +52,10 @@ function entity_created(json_msg) {
 
     switch(type) {
     case "tower_arrows":
-        game.add.sprite(entity.x * TILE_SIZE, entity.y * TILE_SIZE, 'tower');
+        console.log("TODO: create tower at " + [x, y])
         break;
     case "castle":
-        game.add.sprite(entity.x * TILE_SIZE, entity.y * TILE_SIZE, 'castle');
+        console.log("TODO: create castle at " + [x, y])
         break;
     }
 }
