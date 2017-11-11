@@ -38,7 +38,7 @@ class Entity:
         self.level = 1
 
     def to_list(self):
-        return [self.uid, self.x, self.y, 
+        return [self.uid, self.x, self.y,
                 self.typ, self.health, self.level, self.player_name]
 
     def position_tuple(self):
