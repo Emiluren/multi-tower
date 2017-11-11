@@ -13,6 +13,7 @@ function loadOBJFiles() {
   });
   
   return new Promise(function(resolve, reject) {
+
     meshLoadList.forEach(function(mesh) {
       let name = mesh[0];
       let url = mesh[1] + ".obj";
@@ -27,8 +28,17 @@ function loadOBJFiles() {
              url,
              // called when resource is loaded
              function ( object ) {
-                 console.log("materials:",materials);
-                 meshData[name] = [object.children[0].geometry, object.children[0].material];
+                 let geometryList = [];
+                 let mtlList = [];
+                 
+                 object.children.forEach(function(child) {
+                     geometryList.push(child.geometry);
+                     mtlList.push(child.material);
+                     console.log(child.material);
+                 });
+                 
+                 
+                 meshData[name] = [geometryList, mtlList];
                  
                  if (Object.values(meshData).every((x) => x != null)) {
                      resolve(meshData);
@@ -53,6 +63,11 @@ function loadOBJFiles() {
 }
 
 function createMesh(name) {
+    var g = new THREE.Group();
     
-    return new THREE.Mesh(meshData[name][0], meshData[name][1]);
+    for (var i = 0; i < meshData[name][0].length; i++) {
+        g.add(new THREE.Mesh(meshData[name][0][i], meshData[name][1][i]));
+    }
+    
+    return g;
 }
