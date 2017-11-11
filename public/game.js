@@ -45,6 +45,7 @@ $(document).mousemove(function(event) {
 
 // Raycast on mouse click
 $(document).click(function () {
+    console.log("asjkdlakdjsakdjakjskadjksjd");
     raycaster.setFromCamera( mouse_pos, camera );
     var intersects = raycaster.intersectObject( plane );
     request_create_tower(Math.round(intersects[0].point.x), Math.round(intersects[0].point.z));

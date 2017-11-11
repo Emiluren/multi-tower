@@ -11,9 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
     <!-- Debug mode  -->
-    <script>var debug = true;</script>
-
-    <script src="ui.js"></script>
+    <script>var debug = false;</script>
     <link rel="stylesheet" href="index.css"></link>
 
     <script src="meshes.js"></script>
@@ -25,10 +23,11 @@
     <script src="network.js"></script>
     <script src="main.js"></script>
     <script src="game.js"></script>
+    <script src="ui.js"></script>
   </head>
 
   <!-- Player name modal -->
-  <body onload="start().then(start2);" style="margin: 0px;">
+  <body style="margin: 0px;">
     <div class="ui basic modal" id ="player_login">
       <div class="ui huge input">
         <input id="player_name_text" type="text" placeholder="Enter name">

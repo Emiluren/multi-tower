@@ -12,7 +12,7 @@ import json
 import traceback
 import pdb
 
-TICK_TIME = 1
+TICK_TIME = 0.1
 
 SPAWN_DISTANCE = 50
 
@@ -50,6 +50,9 @@ board = {}
 # name -> Player
 players = {}
 
+# uuid -> (Entity, ticks since last fired)
+towers = {}
+
 # uuid -> (Path)
 minions = {}
 
@@ -76,7 +79,19 @@ async def timer_tick():
     await send_tick()
     for player_name in players:
         await update_player(players[player_name])
+    for uid in towers:
+        tower, ticks = towers[uid]
+        ticks += TICK_TIME * TOWER_FREQUENCIES[tower.typ]
+        if ticks >= 1 / TICK_TIME:
+            await fire_tower(tower)
+            ticks = 0
+        towers[uid] = (tower, ticks)
+
     board_lock.release()
+
+
+async def fire_tower(tower):
+    pos = tower.position_tuple()
 
 
 def is_castle_position_free(pos):
@@ -195,6 +210,7 @@ async def on_request_tower(sid, data):
     player = find_player(sid)
     tower = entities.Entity(x, y, typ, player.name)
     board_add_entity(tower)
+    towers[tower.uid] = (tower, 0)
 
     await broadcast_message('entity_created', tower.to_list())
 

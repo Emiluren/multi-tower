@@ -2,8 +2,7 @@ var meshData = {};
 
 
 var meshLoadList = [
-  ['castle', 'assets/Castle'],
-  ['test', 'assets/Castle']
+  ['castle', 'assets/Castle']
 ];
 
 function loadOBJFiles() {

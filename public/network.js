@@ -105,7 +105,8 @@ function request_create_tower(tile_x, tile_y) {
 }
 
 function connect_to_server() {
-    socket = io({ query: { name: 'hejhej' } });
+    console.log($('#player_name_text').val());
+    socket = io({ query: { name:  $('#player_name_text').val()} });
     socket.on('entity_created', entity_created);
     socket.on('entity_destroyed', entity_destroyed);
     socket.on('entity_changed', entity_created);
