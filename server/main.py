@@ -25,9 +25,7 @@ async def run(app):
             except asyncio.CancelledError:
                 raise
             except Exception:
-                print("hej")
                 traceback.print_exc()
-                print("hopp")
 
     except asyncio.CancelledError:
         pass
@@ -61,7 +59,7 @@ async def update_player(player):
         castle = castles[player.name]
 
         # TODO: find optimal side to spawn on given target
-        spawn_x = castle.x + 1
+        spawn_x = castle.x + 2
         spawn_y = castle.y
 
         minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
@@ -134,7 +132,7 @@ def generate_castle_position():
         for castle in castles.values():
             pos = castle.position_tuple()
             new_pos = vec.add(direction, pos)
-            if is_castle_position_free(pos):
+            if is_castle_position_free(new_pos):
                 return new_pos
         it += 1
         # print(castles)
