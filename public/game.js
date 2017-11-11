@@ -30,7 +30,7 @@ function update(delta) {
   camera.position.x += momentum.x*speed
   camera.position.y += momentum.y*speed
   camera.position.z += momentum.z*speed
-    
+
   updateWorld(delta);
 }
 
