@@ -11,9 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
     <!-- Debug mode  -->
-    <script>var debug = true;</script>
-
-    <script src="ui.js"></script>
+    <script>var debug = false;</script>
     <link rel="stylesheet" href="index.css"></link>
 
     <script src="meshes.js"></script>
@@ -25,10 +23,11 @@
     <script src="network.js"></script>
     <script src="main.js"></script>
     <script src="game.js"></script>
+    <script src="ui.js"></script>
   </head>
 
   <!-- Player name modal -->
-  <body onload="start().then(start2);" style="margin: 0px;">
+  <body style="margin: 0px;">
     <div class="ui basic modal" id ="player_login">
       <div class="ui huge input">
         <input id="player_name_text" type="text" placeholder="Enter name">
@@ -40,20 +39,26 @@
     </div>
 
     <!-- Healthbar  -->
-    <div class="dark_overlay" id ="top_container">
-        <div class="ui small inverted green progress" id="healthbar_container" data-value="30" data-total="100">
-            <div class="bar"></div>
-            <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
-        </div>
+    <div class="ui small inverted green progress dark_overlay" id="healthbar_container" data-value="30" data-total="100">
+        <div class="bar"></div>
+        <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
+    </div>
 
+    <!-- Cash indicator -->
+    <div class="dark_overlay" id="cash_container"> Cash: <span class="ui big label dark_overlay" id ="indicator_money">60</span> </div>
 
-        Cash: <span class="ui big label" id ="indicator_money">60</span>
+    <!-- Create menu -->
+    <div class="ui container dark_overlay" id="create_menu">
+        <i class="plus icon"></i>
+        <button class="circular ui icon button">
+            <i class="icon building"></i>
+        </button>
     </div>
 
     <!-- Sidebar -->
     <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>
     <div class="ui dark_overlay wide sidebar left vertical">
-        <h3 class="ui header inverted">Selected: <span id="selected_type" class="ui label green">Owned tower </h3>
+        <h3 class="ui header inverted">Selected: <span id="selected_type" class="ui label green">Owned tower</h3>
         <button class="ui primary basic button"> Delete tower  </button>
         <button class="ui primary basic button"> Upgrade tower </button>
 

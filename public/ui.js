@@ -18,10 +18,12 @@ $(document).ready(function(){
         $("#sidebar_toggle").css("left", ($(".sidebar").position().left+$(".sidebar").width())+"px");
     }, 10);
 
-    $('#player_name_submit').click(function () {
+    $('#player_name_submit').click(function (event) {
         if ($('#player_name_text').val()){
             console.log("Player "+$('#player_name_text').val()+" enters");
             $('.ui.modal').modal('hide')
+            event.stopPropagation();
+            start().then(start2);
         }
     });
 
