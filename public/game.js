@@ -7,7 +7,7 @@ var tile_pos  = new THREE.Vector2();
 
 var momentum = new THREE.Vector3(0, 0, 0);
 var acceleration_rate = 1;
-var deacceleration_rate = 0.5;
+var deacceleration_rate = 0.6;
 
 function update(delta) {
 
@@ -30,6 +30,9 @@ function update(delta) {
       acceleration.y -= speed*acceleration_rate;
 
   momentum = momentum.add(acceleration).multiplyScalar(Math.pow(deacceleration_rate , speed));
+  if (35 < camera.position.y && 0 < momentum.y) momentum.y *= (40 - camera.position.y)/5;
+  if (camera.position.y < 6 && momentum.y < 0)  momentum.y *= (camera.position.y - 2 )/5;
+
   camera.position.x += momentum.x*speed
   camera.position.y += momentum.y*speed
   camera.position.z += momentum.z*speed

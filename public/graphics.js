@@ -25,7 +25,8 @@ const scene = new THREE.Scene();
 
 // Add the camera to the scene.
 scene.add(camera);
-camera.rotation.x -= Math.PI / 4;
+camera.rotateX(-1.0);
+camera.position.set(0, 8, 4);
 
 // Start the renderer.
 renderer.setSize(WIDTH, HEIGHT);
@@ -41,7 +42,7 @@ function initGraphics() {
   // Attach the renderer-supplied
   // DOM element.
   container.appendChild(renderer.domElement);
-  
+
   THREEx.WindowResize(renderer, camera);
 }
 
