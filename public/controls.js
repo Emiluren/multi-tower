@@ -5,7 +5,7 @@ controls["up"] = ["w", ""];
 controls["down"] = ["s", ""];
 controls["left"] = ["a", ""];
 controls["right"] = ["d", ""];
-controls["ascend"] = [" ", ""];
+controls["ascend"] = ["z", ""];
 controls["descend"] = ["x", ""];
 
 var evd = [];
