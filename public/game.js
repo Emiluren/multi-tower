@@ -1,5 +1,4 @@
 
-
 function update(delta) {
   var speed = delta / 100.0;
   if (down("up"))
