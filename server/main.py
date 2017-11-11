@@ -73,6 +73,20 @@ async def index(request):
     with open('../public/index.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
+
+async def send_world_to_player(sid):
+    for ((x, y), castle) in castles.items():
+        data = {
+            "id": castle.uid,
+            "x": x,
+            "y": y,
+            "type": "castle",
+            "health": castle.health,
+            "player_name": castle.player.name
+        }
+        await broadcast_message('entity_created', data, sid)
+
+
 @sio.on('connect')
 async def connect(sid, environ):
     board_lock.acquire()
@@ -83,14 +97,18 @@ async def connect(sid, environ):
     if name in players:
         players[name].sids.append(sid)
     else:
-        players[name] = entities.Player([sid])
+        players[name] = entities.Player(name, [sid])
         await assign_castle(players[name])
+        await broadcast_message('new_player', name)
+        await send_world_to_player(sid)
     board_lock.release()
+
 
 @sio.on('chat message')
 async def message(sid, data):
     print("message ", data)
     await sio.emit('chat message', data=data, room=sid)
+
 
 @sio.on('disconnect')
 def disconnect(sid):
