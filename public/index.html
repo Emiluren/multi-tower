@@ -8,10 +8,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"></link>
     <script src="https://threejs.org/build/three.min.js"></script>
-<<<<<<< HEAD
 
     <!-- Debug-läge  -->
-    <script>var debug = false;</script>
+    <script>var debug = true;</script>
 
     <script src="ui.js"></script>
     <link rel="stylesheet" href="index.css"></link>
@@ -35,6 +34,11 @@
         </button>
       </div>
 
+    </div>
+
+    <div class="ui dark_overlay small inverted green progress" id="healthbar_container" data-value="30" data-total="100">
+        <div class="bar"></div>
+        <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
     </div>
 
     <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>

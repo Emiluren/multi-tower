@@ -25,4 +25,11 @@ $(document).ready(function(){
         }
     });
 
+    function setHealth(value){
+        $('#healthbar_container').progress({ percent: value });
+        $('#healthbar_text').text(value+"%");
+    }
+    setHealth(30);
+
+
 });
