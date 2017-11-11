@@ -25,11 +25,17 @@ body {
     padding:20px;
 }
 
-#healthbar_container {
+#top_container {
     position:absolute;
-    background: #630000;
+    display: inline-block;
+
     margin:10px;
     left: 50%;
     transform: translate(-50%);
     width:20%;
+    height: 30px;
+}
+
+#healthbar_container {
+    background: #630000;
 }
