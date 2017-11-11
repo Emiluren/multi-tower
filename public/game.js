@@ -30,8 +30,8 @@ function update(delta) {
       acceleration.y -= speed*acceleration_rate;
 
   momentum = momentum.add(acceleration).multiplyScalar(Math.pow(deacceleration_rate , speed));
-  if (100 < camera.position.y && 0 < momentum.y) momentum.y *= (105 - camera.position.y)/5;
-  if (camera.position.y < 25 && momentum.y < 0)  momentum.y *= (camera.position.y - 20 )/5;
+  if (35 < camera.position.y && 0 < momentum.y) momentum.y *= (40 - camera.position.y)/5;
+  if (camera.position.y < 6 && momentum.y < 0)  momentum.y *= (camera.position.y - 2 )/5;
 
   camera.position.x += momentum.x*speed
   camera.position.y += momentum.y*speed
