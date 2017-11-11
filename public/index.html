@@ -17,7 +17,7 @@
     <script src="game.js"></script>
   </head>
 
-  <body onload="start();" style="margin: 0px;">
+  <body onload="start().then(start2);" style="margin: 0px;">
     <div class="ui basic modal" id ="player_login" style="text-align:center">
       <div class="ui huge input">
         <input id="player_name_text" type="text" placeholder="Enter name">
