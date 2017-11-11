@@ -111,7 +111,7 @@ async def actually_fire_the_damn_tower(minion_id, tower):
 
 def kill_minion_locally(minion_id):
     board_remove_entity(minion_id)
-    del minions[uid]
+    del minions[minion_id]
 
 
 def is_castle_position_free(pos):
@@ -184,7 +184,8 @@ async def assign_castle(player_name):
     castle = entities.Entity(x, y, 'castle', player_name)
     castles[player_name] = castle
     board_add_entity(castle)
-    await broadcast_message('entity_created', [castle.uid, x, y, 'castle', 100, 1, player_name])
+    await broadcast_message('entity_created', 
+                            [castle.uid, x, y, 'castle', 100, 1, player_name])
 
 
 async def broadcast_message(message_type, data, sid=None):
@@ -233,6 +234,30 @@ async def on_request_tower(sid, data):
     towers[tower.uid] = (tower, 0)
 
     await broadcast_message('entity_created', tower.to_list())
+
+
+@sio.on('request_upgrade')
+async def on_request_upgrade(sid, data):
+    print("Upgrade requested: ", data)
+    entity_id = data
+    entity = board_entities[entity_id]
+    player = find_player(sid)
+    if entity.is_tower():
+        cost = TOWER_UPGRADE_COSTS[tower]
+        if cost <= player.cash:
+            players[player.name].cash -= cost
+            tower.level += 0.5
+            await broadcast_message('entity_changed',
+                                   [entity_id, 'level', tower.level])
+            await broadcast_message('player_cash_changed', 
+                                    [player.name, player.cash])
+        else:
+            print(player.name + ' cannot afford this upgrade!')
+
+
+@sio.on('request_delete')
+async def on_request_delete(sid, data):
+    pass
 
 
 @sio.on('disconnect')
