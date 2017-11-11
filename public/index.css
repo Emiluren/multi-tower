@@ -1,5 +1,6 @@
-.body {
+body {
     margin: 0px;
+    user-select:none;
 }
 
 .dark_overlay {
