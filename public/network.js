@@ -1,3 +1,6 @@
+const TYPE_CASTLE = "castle";
+const TYPE_TOWER_ARROWS = "tower_arrows";
+
 var socket = null;
 
 // uuid -> Entity
@@ -51,11 +54,14 @@ function entity_created(json_msg) {
     board_add_entity(id, x, y);
 
     switch(type) {
-    case "tower_arrows":
+    case TYPE_TOWER_ARROWS:
         console.log("TODO: create tower at " + [x, y])
         break;
-    case "castle":
-        console.log("TODO: create castle at " + [x, y])
+    case TYPE_CASTLE:
+        var mesh = createMesh("castle");
+        mesh.position.set(x, 0, y);
+        mesh.rotation.y = Math.PI / 2;
+        scene.add(mesh);
         break;
     }
 }

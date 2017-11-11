@@ -31,7 +31,6 @@ function update(delta) {
   camera.position.y += momentum.y*speed
   camera.position.z += momentum.z*speed
 
-
     // Getting mouse mosition
     $(document).mousemove(function(event) {
         mouse_pos.x =  ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -45,7 +44,9 @@ function update(delta) {
         for ( var i = 0; i < intersects.length; i++ ) {
             intersects[ i ].object.material.color.set( 0xff0000 );
         }
-    })
+    });
+
+  updateWorld(delta);
 }
 
 function draw() {
