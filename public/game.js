@@ -84,6 +84,10 @@ function entity_changed(json_msg) {
     }
 }
 
+function tick(msg) {
+    console.log('TICK')
+}
+
 function request_create_tower(pointer, doubleTap) {
     console.log('x: ' + pointer.clientX + ', y: ' + pointer.clientY);
     x = Math.round(pointer.clientX / TILE_SIZE);
@@ -105,6 +109,7 @@ function create() {
     socket.on('entity_destroyed', entity_destroyed);
     socket.on('entity_changed', entity_created);
     socket.on('new_player', new_player);
+    socket.on('tick', tick);
 }
 
 var origDragPoint = null;

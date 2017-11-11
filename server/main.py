@@ -3,6 +3,7 @@ from aiohttp import web
 import vec
 import entities
 import socketio
+import asyncio
 import threading
 import time
 import urllib.parse
@@ -14,16 +15,13 @@ TICK_TIME = 1
 
 SPAWN_DISTANCE = 50
 
-class MainThread(threading.Thread):
-
-    def __init__(self):
-        super(MainThread, self).__init__()
-        self.stop_flag = False
-
-    def run(self):
-        while not self.stop_flag:
-            timer_tick()
-            time.sleep(TICK_TIME)
+async def run(app):
+    try:
+        while True:
+            await timer_tick()
+            await asyncio.sleep(TICK_TIME, loop=app.loop)
+    except asyncio.CancelledError:
+        pass
 
 sio = socketio.AsyncServer()
 app = web.Application()
@@ -43,9 +41,10 @@ board = {}
 # name -> Player
 players = {}
 
-def timer_tick():
+async def timer_tick():
     board_lock.acquire()
     print(board_entities)
+    await send_tick()
     board_lock.release()
 
 
@@ -99,6 +98,10 @@ def generate_castle_position():
             new_pos = vec.add(direction, pos)
             if is_castle_position_free(pos):
                 return new_pos
+
+
+async def send_tick():
+    await broadcast_message('tick', '')
 
 
 async def assign_castle(player_name):
@@ -163,11 +166,20 @@ def disconnect(sid):
 app.router.add_get('/', index)
 app.router.add_static('/', '../public')
 
+
+async def start_background_tasks(app):
+    app['ticker'] = app.loop.create_task(run(app))
+
+async def cleanup(app):
+    app['ticker'].cancel()
+    await app['ticker']
+
+
 def start_server():
-    t = MainThread()
     try:
-        t.start()
-        web.run_app(app, handle_signals=False)
+        app.on_startup.append(start_background_tasks)
+        app.on_cleanup.append(cleanup)
+        web.run_app(app)
     except KeyboardInterrupt:
         t.stop_flag = True
 

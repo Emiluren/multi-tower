@@ -32,9 +32,3 @@ class Entity:
         return '{} with health: {}'.format(self.typ, self.health)
 
 
-class Minion:
-
-    def __init__(self):
-        self.health = MAX_HEALTH
-        self.level = 1
-
