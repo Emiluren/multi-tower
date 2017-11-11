@@ -37,16 +37,22 @@ function update(delta) {
   camera.position.y += momentum.y*speed
   camera.position.z += momentum.z*speed
 
-  if(adding)
-    raycast();
+  if (adding)
+    raycast_toPlane();
 
   updateWorld(delta);
 }
 
-function raycast() {
+function raycast_toPlane() {
   raycaster.setFromCamera( mouse_pos, camera );
   var intersects = raycaster.intersectObject( plane );
   tile_pos = new THREE.Vector2(Math.round(intersects[0].point.x), Math.round(intersects[0].point.z));
+}
+
+function raycast() {
+    raycaster.setFromCamera( mouse_pos, camera );
+    var intersects = raycaster.intersectObjects ( scene.children );
+    return intersects[0];
 }
 
 // Getting mouse position
@@ -61,6 +67,10 @@ $(renderer.domElement).click(function () {
       request_create_tower(tile_pos.x, tile_pos.y);
       adding = false;
       addingMode();
+    }
+    else {
+        console.log('Tried to select: ');
+        console.log(raycast());
     }
 });
 
