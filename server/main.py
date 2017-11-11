@@ -9,6 +9,7 @@ import urllib.parse
 import random
 import json
 import uuid
+import pdb
 
 TICK_TIME = 1
 
@@ -77,9 +78,13 @@ async def connect(sid, environ):
     board_lock.acquire()
     query = urllib.parse.parse_qs(environ['QUERY_STRING'])
     print("connect ", sid, query)
-    p = entities.Player()
-    players[sid] = p
-    await assign_castle(p)
+    name = query['name'][0]
+
+    if name in players:
+        players[name].sids.append(sid)
+    else:
+        players[name] = entities.Player([sid])
+        await assign_castle(players[name])
     board_lock.release()
 
 @sio.on('chat message')
@@ -90,18 +95,29 @@ async def message(sid, data):
 @sio.on('disconnect')
 def disconnect(sid):
     board_lock.acquire()
-    del players[sid]
+    remove_player_sid(sid)
     board_lock.release()
     print('disconnect ', sid)
+
+
+def remove_player_sid(sid):
+    for player in players.values():
+        if sid in player.sids:
+            player.sids.remove(sid)
+            return
+
 
 app.router.add_get('/', index)
 app.router.add_static('/', '../public')
 
-if __name__ == '__main__':
+def start_server():
     t = MainThread()
     try:
         t.start()
         web.run_app(app, handle_signals=False)
     except KeyboardInterrupt:
         t.stop_flag = True
+
+if __name__ == '__main__':
+    start_server()
 

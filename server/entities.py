@@ -4,7 +4,8 @@ MAX_HEALTH = 100
 
 class Player:
     
-    pass 
+    def __init__(self, sids):
+        self.sids = sids
 
 
 class Castle:
