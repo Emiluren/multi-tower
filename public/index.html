@@ -44,7 +44,17 @@
         <div class="bar"></div>
         <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
     </div>
-    <div class="dark_overlay" style="right: 20px;"> Cash: <span class="ui big label dark_overlay" id ="indicator_money">60</span> </div>
+
+    <!-- Cash indicator -->
+    <div class="dark_overlay" id="cash_container"> Cash: <span class="ui big label dark_overlay" id ="indicator_money">60</span> </div>
+
+    <!-- Create menu -->
+    <div class="ui container dark_overlay" id="create_menu">
+        <i class="plus icon"></i>
+        <button class="circular ui icon button">
+            <i class="icon building"></i>
+        </button>
+    </div>
 
     <!-- Sidebar -->
     <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>
