@@ -4,19 +4,24 @@ var running = false;
 var previousTime = new Date().getTime();
 
 function start() {
-
   // Init three js
   initGraphics();
 
-  // Populate world
-  populate();
+  // Load object files
+  return loadOBJFiles();
+}
 
-  // Set up game
-  initControls();
+function start2() {
+    console.log("start2");
+    // Populate world
+    populate();
 
-  // Loop
-  running = true;
-  loop();
+    // Set up game
+    initControls();
+
+    // Loop
+    running = true;
+    loop();
 }
 
 function loop() {
