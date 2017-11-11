@@ -103,7 +103,7 @@ async def fire_tower_if_in_range(tower):
 
 
 async def actually_fire_the_damn_tower(minion_id, tower):
-    board_entities[minion_id] -= tower.level * \
+    board_entities[minion_id].health -= tower.level * \
             entities.TOWER_DAMAGES[tower.typ]
 
 
