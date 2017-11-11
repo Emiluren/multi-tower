@@ -1,4 +1,5 @@
 node_modules/
+__pycache__/
 *.blend1
 !*.obj
 server/__pycache__/

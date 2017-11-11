@@ -27,6 +27,9 @@ scene.add(camera);
 // Start the renderer.
 renderer.setSize(WIDTH, HEIGHT);
 
+// instantiate a loader
+var loader = new THREE.OBJLoader();
+
 function initGraphics() {
   // Get the DOM element to attach to
   const container =
