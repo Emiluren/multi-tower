@@ -41,7 +41,7 @@ function board_move_entity(id, new_pos) {
 }
 
 function entity_created(json_msg) {
-    console.log('Entity created: ' + json_msg)
+    //console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
 
     let id = msg[0];
@@ -56,6 +56,9 @@ function entity_created(json_msg) {
     switch(type) {
     case TYPE_TOWER_ARROWS:
         console.log("TODO: create tower at " + [x, y])
+        var mesh = createMesh("minion");
+        mesh.position.set(x, 0, y);
+        scene.add(mesh);
         break;
     case TYPE_CASTLE:
         var mesh = createMesh("castle");
