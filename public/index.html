@@ -40,20 +40,16 @@
     </div>
 
     <!-- Healthbar  -->
-    <div class="dark_overlay" id ="top_container">
-        <div class="ui small inverted green progress" id="healthbar_container" data-value="30" data-total="100">
-            <div class="bar"></div>
-            <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
-        </div>
-
-
-        Cash: <span class="ui big label" id ="indicator_money">60</span>
+    <div class="ui small inverted green progress dark_overlay" id="healthbar_container" data-value="30" data-total="100">
+        <div class="bar"></div>
+        <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
     </div>
+    <div class="dark_overlay" style="right: 20px;"> Cash: <span class="ui big label dark_overlay" id ="indicator_money">60</span> </div>
 
     <!-- Sidebar -->
     <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>
     <div class="ui dark_overlay wide sidebar left vertical">
-        <h3 class="ui header inverted">Selected: <span id="selected_type" class="ui label green">Owned tower </h3>
+        <h3 class="ui header inverted">Selected: <span id="selected_type" class="ui label green">Owned tower</h3>
         <button class="ui primary basic button"> Delete tower  </button>
         <button class="ui primary basic button"> Upgrade tower </button>
 
