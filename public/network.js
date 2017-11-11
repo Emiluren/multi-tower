@@ -61,6 +61,7 @@ function entity_created(json_msg) {
         scene.add(mesh);
         break;
     case TYPE_CASTLE:
+        console.log("TODO: create castle at " + [x, y])
         var mesh = createMesh("castle");
         mesh.position.set(x, 0, y);
         mesh.rotation.y = Math.PI / 2;

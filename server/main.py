@@ -18,10 +18,15 @@ SPAWN_DISTANCE = 50
 
 async def run(app):
     try:
+        slow_counter = 10
         while True:
             try:
-                await timer_tick()
+                await fast_timer_tick()
                 await asyncio.sleep(TICK_TIME, loop=app.loop)
+                slow_counter -= 1
+                if slow_counter <= 0:
+                    slow_counter = 10
+                    await slow_timer_tick()
             except asyncio.CancelledError:
                 raise
             except Exception:
@@ -72,11 +77,8 @@ async def update_player(player):
         await broadcast_message('entity_created', minion.to_list())
 
 
-async def timer_tick():
+async def fast_timer_tick():
     board_lock.acquire()
-    await send_tick()
-    for player_name in players:
-        await update_player(players[player_name])
     for uid in towers:
         tower, ticks = towers[uid]
         ticks += TICK_TIME * \
@@ -85,7 +87,14 @@ async def timer_tick():
             await fire_tower_if_in_range(tower)
             ticks = 0
         towers[uid] = (tower, ticks)
+    board_lock.release()
 
+
+async def slow_timer_tick():
+    board_lock.acquire()
+    await send_tick()
+    for player_name in players:
+        await update_player(players[player_name])
     board_lock.release()
 
 
@@ -200,6 +209,7 @@ async def index(request):
 async def send_world_to_player(sid):
     for entity in board_entities.values():
         await broadcast_message('entity_created', entity.to_list(), sid)
+        print("sending", entity.to_list())
     print("sent world to", sid)
 
 
@@ -210,8 +220,6 @@ async def connect(sid, environ):
     print("connect ", sid, query)
     name = query['name'][0]
 
-    print('NAME: ', name)
-    print('PLAYERS: ', players)
     if name not in players:
         players[name] = entities.Player(name, [sid])
         await assign_castle(name)
