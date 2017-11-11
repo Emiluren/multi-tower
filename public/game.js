@@ -1,18 +1,29 @@
+var momentum = new Vector(0, 0, 0);
+
+var acceleration_rate = 1;
+var deacceleration_rate = 0.5;
 
 function update(delta) {
   var speed = delta / 100.0;
+  var acceleration = new Vector(0,0,0);
+
   if (down("up"))
-    camera.position.z -= speed;
+      acceleration.z -= speed*acceleration_rate;
   if (down("down"))
-    camera.position.z += speed;
+      acceleration.z += speed*acceleration_rate;
   if (down("left"))
-    camera.position.x -= speed;
+      acceleration.x -= speed*acceleration_rate;
   if (down("right"))
-    camera.position.x += speed;
+      acceleration.x += speed*acceleration_rate;
   if (down("ascend"))
-    camera.position.y += speed;
+      acceleration.y += speed*acceleration_rate;
   if (down("descend"))
-    camera.position.y -= speed;
+      acceleration.y -= speed*acceleration_rate;
+
+  momentum = momentum.add(acceleration).multiply(Math.pow(deacceleration_rate , speed));
+  camera.position.x += momentum.x*speed
+  camera.position.y += momentum.y*speed
+  camera.position.z += momentum.z*speed
 }
 
 function draw() {
