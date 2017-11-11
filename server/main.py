@@ -9,6 +9,7 @@ import time
 import urllib.parse
 import random
 import json
+import traceback
 import pdb
 
 TICK_TIME = 1
@@ -18,8 +19,16 @@ SPAWN_DISTANCE = 50
 async def run(app):
     try:
         while True:
-            await timer_tick()
-            await asyncio.sleep(TICK_TIME, loop=app.loop)
+            try:
+                await timer_tick()
+                await asyncio.sleep(TICK_TIME, loop=app.loop)
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                print("hej")
+                traceback.print_exc()
+                print("hopp")
+
     except asyncio.CancelledError:
         pass
 
@@ -41,6 +50,9 @@ board = {}
 # name -> Player
 players = {}
 
+# uuid -> (Path)
+minions = {}
+
 async def update_player(player):
     player.spawn_timer -= 1
     if player.spawn_timer <= 0:
@@ -52,10 +64,11 @@ async def update_player(player):
         spawn_x = castle.x + 1
         spawn_y = castle.y
 
-        minion = entities.Entity(x, y, "minion", player.name)
+        minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
         board_add_entity(minion)
+        minions[minion.uid] = []
 
-        await broadcast_message('entity_created', tower.to_list())
+        await broadcast_message('entity_created', minion.to_list())
 
 
 async def timer_tick():
