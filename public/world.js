@@ -1,13 +1,14 @@
 
 var grid = 0;
 var gridStack = 0;
+var plane;
 
 function populate() {
 
   // Create game plane
   var planeGeometry = new THREE.PlaneGeometry(1001, 1001);
   var planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-  var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+  plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.receiveShadow = true;
   plane.rotation.x += Math.PI / 2;
   scene.add(plane);

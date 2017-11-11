@@ -31,23 +31,24 @@ function update(delta) {
   camera.position.y += momentum.y*speed
   camera.position.z += momentum.z*speed
 
-    // Getting mouse mosition
-    $(document).mousemove(function(event) {
-        mouse_pos.x =  ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse_pos.y =  ( event.clientY / window.innerWidth ) * 2 - 1;
-    });
-
-    // Raycast on mouse click
-    $(document).click(function () {
-        raycaster.setFromCamera( mouse_pos, camera );
-        var intersects = raycaster.intersectObjects( scene.children );
-        for ( var i = 0; i < intersects.length; i++ ) {
-            intersects[ i ].object.material.color.set( 0xff0000 );
-        }
-    });
+    console.log(mouse_pos);
 
   updateWorld(delta);
 }
+
+// Getting mouse position
+$(document).mousemove(function(event) {
+    mouse_pos.x =  ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse_pos.y =  -( event.clientY / window.innerHeight ) * 2 + 1;
+});
+
+
+// Raycast on mouse click
+$(document).click(function () {
+    raycaster.setFromCamera( mouse_pos, camera );
+    var intersects = raycaster.intersectObject( plane );
+    request_create_tower(Math.round(intersects[0].point.x), Math.round(intersects[0].point.z));
+});
 
 function draw() {
   renderer.render(scene, camera);
