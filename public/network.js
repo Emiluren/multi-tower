@@ -74,8 +74,10 @@ function entity_destroyed(msg) {
     console.log('Entity destroyed: ' + msg)
     let id = JSON.parse(msg);
     let entity = entities[id];
-
+    getTargetPosition(id);
+    console.log(entities[id]);
     delete entities[id];
+    
 }
 
 function entity_changed(json_msg) {
