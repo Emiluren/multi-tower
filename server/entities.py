@@ -9,9 +9,11 @@ class Player:
         self.sids = sids
 
 
-class Castle:
+class Entity:
 
-    def __init__(self, player, uid):
+    def __init__(self, uid, x, y, typ, player_name):
+        self.x = x
+        self.y = y
         self.player = player
         self.health = MAX_HEALTH
         self.uid = uid

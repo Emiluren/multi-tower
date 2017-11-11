@@ -33,13 +33,21 @@ sio.attach(app)
 board_lock = threading.Lock()
 
 castles = {}
-board = {}
+board_entities = {}
 players = {}
 
 def timer_tick():
     board_lock.acquire()
-    print(board)
+    print(board_entities)
     board_lock.release()
+
+
+def is_castle_position_free(pos):
+    x, y = pos
+    for castle in castles.values():
+        if x == castle.x and y == castle.y:
+            return False
+    return True
 
 
 def generate_castle_position():
@@ -49,18 +57,17 @@ def generate_castle_position():
         r1 = random.randint(-1, 1)
         r2 = random.randint(-1, 1)
         direction = (r1*SPAWN_DISTANCE, r2*SPAWN_DISTANCE)
-        for pos in castles:
+        for pos in castles: # TODO NO LONGER POSITIONS!!!
             new_pos = vec.add(direction, pos)
-            if not new_pos in castles:
+            if is_castle_position_free(pos):
                 return new_pos
 
 
 async def assign_castle(player):
-    pos = generate_castle_position()
-    castle = entities.Castle(player, uuid.uuid4().hex)
-    castles[pos] = castle
-    board[pos] = castle
-    x, y = pos
+    x, y = generate_castle_position()
+    castle = board_entities.Castle(player, uuid.uuid4().hex)
+    castles[player.name] = castle
+    board_entities[castle.uid] = castle
     await broadcast_message('entity_created', [castle.uid, x, y, 'castle', 100, 1, player.name])
 
 
