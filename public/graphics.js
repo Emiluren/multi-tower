@@ -1,6 +1,6 @@
 // Set up three js
-const WIDTH = window.innerWidth
-const HEIGHT = window.innerHeight
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
 
 // Set some camera attributes.
 const VIEW_ANGLE = 45;
@@ -44,6 +44,8 @@ function initGraphics() {
   // Attach the renderer-supplied
   // DOM element.
   container.appendChild(renderer.domElement);
+  
+  THREEx.WindowResize(renderer, camera);
 }
 
 function showPreview(type){
