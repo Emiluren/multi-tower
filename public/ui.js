@@ -25,7 +25,7 @@ $(document).ready(function(){
 
     // THIS IS A REALLY UGLY WAY DO DO IT. IT SHOULD BE TRANSITIONING INSTEAD
     setInterval(function () {
-        $("#sidebar_toggle").css("left", ($(".sidebar").position().left+$(".sidebar").width())+"px");
+        $("#sidebar_toggle").css("left", ($(".sidebar").position().left+$(".sidebar").width()+40+"px"));
     }, 10);
 
     // Healthbar
