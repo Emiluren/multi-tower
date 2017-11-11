@@ -11,6 +11,7 @@ const FAR = 10000;
 // Create a WebGL renderer, camera
 // and a scene
 const renderer = new THREE.WebGLRenderer();
+renderer.shadowMapEnabled = true;
 const camera =
     new THREE.PerspectiveCamera(
         VIEW_ANGLE,
@@ -23,6 +24,7 @@ const scene = new THREE.Scene();
 
 // Add the camera to the scene.
 scene.add(camera);
+camera.rotation.x -= Math.PI / 4;
 
 // Start the renderer.
 renderer.setSize(WIDTH, HEIGHT);
