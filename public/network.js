@@ -65,7 +65,7 @@ function entity_created(json_msg) {
     case TYPE_MINION:
         m = createMesh("minion");
         m.position.set(x, 0, y);
-        scene.add(m);
+        //scene.add(m);
         break;
     }
 
