@@ -76,15 +76,16 @@ async def index(request):
 
 async def send_world_to_player(sid):
     for ((x, y), castle) in castles.items():
-        data = {
-            "id": castle.uid,
-            "x": x,
-            "y": y,
-            "type": "castle",
-            "health": castle.health,
-            "player_name": castle.player.name
-        }
+        data = [
+            castle.uid,
+            x,
+            y,
+            "castle",
+            castle.health,
+            castle.player.name
+        ]
         await broadcast_message('entity_created', data, sid)
+        print("sent world to", sid)
 
 
 @sio.on('connect')
@@ -100,7 +101,7 @@ async def connect(sid, environ):
         players[name] = entities.Player(name, [sid])
         await assign_castle(players[name])
         await broadcast_message('new_player', name)
-        await send_world_to_player(sid)
+    await send_world_to_player(sid)
     board_lock.release()
 
 
