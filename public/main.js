@@ -18,6 +18,8 @@ function start2(meshData) {
     // Set up game
     initControls();
 
+    connect_to_server();
+
     // Loop
     running = true;
     loop();

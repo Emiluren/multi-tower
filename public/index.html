@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"></link>
     <script src="https://threejs.org/build/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
     <!-- Debug mode  -->
     <script>var debug = true;</script>
@@ -20,6 +21,7 @@
     <script src="world.js"></script>
     <script src="graphics.js"></script>
     <script src="controls.js"></script>
+    <script src="network.js"></script>
     <script src="main.js"></script>
     <script src="game.js"></script>
   </head>
@@ -48,7 +50,6 @@
         <h3 class="ui header inverted">Section Two</h3>
         <div class="ui section divider inverted"></div>
         <h3 class="ui header inverted">Selected: <span id="selected_type" class="ui label red">Enemy tower</h3>
-
     </div>
 
     <!-- three.js 3D rendering -->
@@ -56,7 +57,6 @@
 
 
 
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
   </body>
 
