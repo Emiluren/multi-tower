@@ -11,7 +11,7 @@ var deacceleration_rate = 0.5;
 
 function update(delta) {
 
-    // Moving camera
+  // Moving camera
 
   var speed = delta / 100.0;
   var acceleration = new THREE.Vector3(0,0,0);
@@ -52,11 +52,13 @@ $(document).mousemove(function(event) {
     mouse_pos.y =  -( event.clientY / window.innerHeight ) * 2 + 1;
 });
 
-
 // Raycast on mouse click
-$(document).click(function () {
-    raycast();
-    //equest_create_tower();
+$(renderer.domElement).click(function () {
+    if (adding) {
+      request_create_tower(tile_pos.x, tile_pos.y);
+      adding = false;
+      addingMode();
+    }
 });
 
 function draw() {

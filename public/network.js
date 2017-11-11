@@ -56,7 +56,7 @@ function entity_created(json_msg) {
     switch(type) {
     case TYPE_TOWER_ARROWS:
         console.log("TODO: create tower at " + [x, y])
-        var mesh = createMesh("minion");
+        var mesh = createMesh("tower");
         mesh.position.set(x, 0, y);
         scene.add(mesh);
         break;
@@ -95,7 +95,7 @@ function entity_changed(json_msg) {
 }
 
 function tick(msg) {
-    console.log('TICK')
+    //console.log('TICK')
 }
 
 function request_create_tower(tile_x, tile_y) {

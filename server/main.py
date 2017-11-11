@@ -199,9 +199,9 @@ async def index(request):
 
 
 async def send_world_to_player(sid):
-    for castle in castles.values():
-        await broadcast_message('entity_created', castle.to_list(), sid)
-        print("sent world to", sid)
+    for entity in board_entities.values():
+        await broadcast_message('entity_created', entity.to_list(), sid)
+    print("sent world to", sid)
 
 
 @sio.on('connect')
