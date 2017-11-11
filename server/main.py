@@ -18,10 +18,15 @@ SPAWN_DISTANCE = 50
 
 async def run(app):
     try:
+        slow_counter = 10
         while True:
             try:
-                await timer_tick()
+                await fast_timer_tick()
                 await asyncio.sleep(TICK_TIME, loop=app.loop)
+                slow_counter -= 1
+                if slow_counter <= 0:
+                    slow_counter = 10
+                    await slow_timer_tick()
             except asyncio.CancelledError:
                 raise
             except Exception:
@@ -72,11 +77,8 @@ async def update_player(player):
         await broadcast_message('entity_created', minion.to_list())
 
 
-async def timer_tick():
+async def fast_timer_tick():
     board_lock.acquire()
-    await send_tick()
-    for player_name in players:
-        await update_player(players[player_name])
     for uid in towers:
         tower, ticks = towers[uid]
         ticks += TICK_TIME * \
@@ -85,7 +87,14 @@ async def timer_tick():
             await fire_tower_if_in_range(tower)
             ticks = 0
         towers[uid] = (tower, ticks)
+    board_lock.release()
 
+
+async def slow_timer_tick():
+    board_lock.acquire()
+    await send_tick()
+    for player_name in players:
+        await update_player(players[player_name])
     board_lock.release()
 
 
@@ -111,7 +120,7 @@ async def actually_fire_the_damn_tower(minion_id, tower):
 
 def kill_minion_locally(minion_id):
     board_remove_entity(minion_id)
-    del minions[uid]
+    del minions[minion_id]
 
 
 def is_castle_position_free(pos):
@@ -184,7 +193,8 @@ async def assign_castle(player_name):
     castle = entities.Entity(x, y, 'castle', player_name)
     castles[player_name] = castle
     board_add_entity(castle)
-    await broadcast_message('entity_created', [castle.uid, x, y, 'castle', 100, 1, player_name])
+    await broadcast_message('entity_created', 
+                            [castle.uid, x, y, 'castle', 100, 1, player_name])
 
 
 async def broadcast_message(message_type, data, sid=None):
@@ -200,6 +210,7 @@ async def index(request):
 async def send_world_to_player(sid):
     for entity in board_entities.values():
         await broadcast_message('entity_created', entity.to_list(), sid)
+        print("sending", entity.to_list())
     print("sent world to", sid)
 
 
@@ -210,8 +221,6 @@ async def connect(sid, environ):
     print("connect ", sid, query)
     name = query['name'][0]
 
-    print('NAME: ', name)
-    print('PLAYERS: ', players)
     if name not in players:
         players[name] = entities.Player(name, [sid])
         await assign_castle(name)
@@ -233,6 +242,30 @@ async def on_request_tower(sid, data):
     towers[tower.uid] = (tower, 0)
 
     await broadcast_message('entity_created', tower.to_list())
+
+
+@sio.on('request_upgrade')
+async def on_request_upgrade(sid, data):
+    print("Upgrade requested: ", data)
+    entity_id = data
+    entity = board_entities[entity_id]
+    player = find_player(sid)
+    if entity.is_tower():
+        cost = TOWER_UPGRADE_COSTS[tower]
+        if cost <= player.cash:
+            players[player.name].cash -= cost
+            tower.level += 0.5
+            await broadcast_message('entity_changed',
+                                   [entity_id, 'level', tower.level])
+            await broadcast_message('player_cash_changed', 
+                                    [player.name, player.cash])
+        else:
+            print(player.name + ' cannot afford this upgrade!')
+
+
+@sio.on('request_delete')
+async def on_request_delete(sid, data):
+    pass
 
 
 @sio.on('disconnect')

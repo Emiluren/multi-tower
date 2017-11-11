@@ -5,6 +5,7 @@ MAX_HEALTH = 100
 SPAWN_INTERVAL = 10
 
 # Controls how fast each type of tower fires
+
 TOWER_FREQUENCIES = {
     'tower_arrows' : 10
 }
@@ -18,12 +19,17 @@ TOWER_DAMAGES = {
     'tower_arrows': 10
 }
 
+TOWER_UPGRADE_COSTS = {
+    'tower_arrows': 10
+}
+
 class Player:
 
     def __init__(self, name, sids):
         self.name = name
         self.sids = sids
         self.spawn_timer = SPAWN_INTERVAL
+        self.cash = 0
 
 
 class Entity:
@@ -36,6 +42,9 @@ class Entity:
         self.health = MAX_HEALTH
         self.uid = uuid.uuid4().hex
         self.level = 1
+
+    def is_tower(self):
+        return self.typ in TOWER_FREQUENCIES
 
     def to_list(self):
         return [self.uid, self.x, self.y,
