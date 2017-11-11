@@ -95,7 +95,7 @@ function entity_changed(json_msg) {
 }
 
 function tick(msg) {
-    console.log('TICK')
+    //console.log('TICK')
 }
 
 function request_create_tower(tile_x, tile_y) {

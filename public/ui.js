@@ -3,7 +3,7 @@ $(document).ready(function(){
     $('.ui.modal').modal('setting', 'closable', false);
     if (!debug) $('.ui.modal').modal('show');
 
-    tryLogin = function(){
+    tryLogin = function(event) {
         if ($('#player_name_text').val()){
             console.log("Player "+$('#player_name_text').val()+" enters");
             $('.ui.modal').modal('hide')
@@ -12,10 +12,10 @@ $(document).ready(function(){
         }
     }
 
-    $('#player_name_submit').click(function () { tryLogin() });
+    $('#player_name_submit').click(function (e) { tryLogin(e) });
     $('#player_name_text').keypress(function (e) {
         if (e.which == 13){
-            tryLogin();
+            tryLogin(e);
         }
     });
 
