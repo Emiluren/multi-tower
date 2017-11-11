@@ -2,8 +2,9 @@ var meshData = {};
 
 
 var meshLoadList = [
-  ['castle', 'assets/Castle']
-];
+  ['castle', 'assets/Castle'],
+  ['minion', 'assets/minion_lvl1']
+]
 
 function loadOBJFiles() {
   meshLoadList.forEach(function(mesh) {
@@ -14,6 +15,11 @@ function loadOBJFiles() {
   return new Promise(function(resolve, reject) {
 
     meshLoadList.forEach(function(mesh) {
+
+      // instantiate loaders
+      var objLoader = new THREE.OBJLoader();
+      var mtlLoader = new THREE.MTLLoader();
+
       let name = mesh[0];
       let url = mesh[1] + ".obj";
       let mtlUrl = mesh[1] + ".mtl";
@@ -33,7 +39,6 @@ function loadOBJFiles() {
                  object.children.forEach(function(child) {
                      geometryList.push(child.geometry);
                      mtlList.push(child.material);
-                     console.log(child.material);
                  });
 
 

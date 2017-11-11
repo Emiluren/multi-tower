@@ -11,6 +11,7 @@ const FAR = 10000;
 // Create a WebGL renderer, camera
 // and a scene
 const renderer = new THREE.WebGLRenderer();
+renderer.context.getShaderInfoLog = function () { return '' };
 renderer.shadowMapEnabled = true;
 const camera =
     new THREE.PerspectiveCamera(
@@ -28,10 +29,6 @@ camera.rotation.x -= Math.PI / 4;
 
 // Start the renderer.
 renderer.setSize(WIDTH, HEIGHT);
-
-// instantiate loaders
-var objLoader = new THREE.OBJLoader();
-var mtlLoader = new THREE.MTLLoader();
 
 // // set mtl path
 // mtlLoader.setPath('assets/');
