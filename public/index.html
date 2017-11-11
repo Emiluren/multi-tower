@@ -28,6 +28,7 @@
 
     </div>
 
+    <button class="ui black left toggle button" id="sidebar_toggle" style="position:absolute;left:260px; z-index:10;"> << </button>
     <div class="ui sidebar left vertical inverted" style="background-color:#bbf1ff"> HÄR ÄR EN MASSA FIN TEXT</div>
 
     <div class="pusher" id="container"></div>
@@ -39,7 +40,7 @@
   </body>
 
   <script>
-      var debug = false;
+      var debug = true;
       $(document).ready(function(){
           $('.sidebar')
               .sidebar({
@@ -47,10 +48,17 @@
                   dimPage: false
               })
               .sidebar('setting', 'transition', 'overlay')
+              .sidebar('attach events','#sidebar_toggle')
               .sidebar('toggle');
 
           $('.ui.modal').modal('setting', 'closable', false);
           if (!debug) $('.ui.modal').modal('show');
+
+          $("#sidebar_toggle").state({text: {inactive:'<<', active:'>>'}});
+          // THIS IS A REALLY UGLY WAY DO DO IT. IT SHOULD BE TRANSITIONING INSTEAD
+          setInterval(function () {
+              $("#sidebar_toggle").css("left", ($(".sidebar").position().left+$(".sidebar").width())+"px");
+          }, 10);
       });
 
       $('#player_name_submit').click(function () {
@@ -59,6 +67,9 @@
               $('.ui.modal').modal('hide')
           }
       });
+
+
+
 
   </script>
 
