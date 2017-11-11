@@ -1,8 +1,11 @@
 
+var grid = 0;
+var gridStack = 0;
+
 function populate() {
 
   // Create game plane
-  var planeGeometry = new THREE.PlaneGeometry(10, 10);
+  var planeGeometry = new THREE.PlaneGeometry(1001, 1001);
   var planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
   var plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.receiveShadow = true;
@@ -15,22 +18,19 @@ function populate() {
   directionalLight.target = plane;
   directionalLight.castShadow = true;
 
+  // Grid
+  grid = new THREE.GridHelper(1001, 1001);
+  grid.position.y += .1;
+  scene.add(grid);
+
   scene.add( directionalLight );
   var light = new THREE.AmbientLight( 0x202020 ); // soft white light
   scene.add( light );
 
   // Load castle
+}
 
-  var castle = createMesh("castle");
-    console.log(castle.children);
-    castle.children.forEach(function(child) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-    });
-    castle.position.x = 0;
-    castle.position.z = -4.5;
-    castle.rotation.y = Math.PI;
-    scene.add(castle);
-
-
+function updateWorld(delta) {
+  gridStack = (gridStack + delta / 1000.0) % (Math.PI * 2);
+  grid.position.y = .1 + (Math.sin(gridStack) + 1) / 16;
 }
