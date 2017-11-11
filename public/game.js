@@ -17,8 +17,6 @@ var socket = null;
 
 var entities = {};
 var board = {};
-// var castles = {};
-// var towers = {};
 var players = [];
 
 function new_player(json_msg) {
@@ -27,10 +25,30 @@ function new_player(json_msg) {
     players.push(msg)
 }
 
+function board_add_entity(id, pos) {
+    if (pos in board) {
+        board[pos].append(id);
+    } else {
+        board[pos] = [pos];
+    }
+}
+
+function board_remove_entity(id, pos) {
+    board[pos].remove(id);
+    if (board[pos].length == 0) {
+        delete board[pos];
+    }
+}
+
+function board_move_entity(id, pos1, pos2) {
+    board_remove_entity(id, pos1);
+    board_add_entity(id, pos2);
+}
+
 function entity_created(json_msg) {
     console.log('Entity created: ' + json_msg)
     msg = JSON.parse(json_msg);
-    
+
     id = msg[0];
     type = msg[3];
     x = msg[1];
@@ -38,7 +56,7 @@ function entity_created(json_msg) {
     entity = {id: id, x: x, y: y, type: type, health: msg[4],
         level: msg[5], player_name: msg[6]};
     entities[id] = entity;
-    board[[x, y]] = entity;
+    board_add_entity(id, x, y);
     game.add.sprite(entity.x, entity.y, 'tower');
 }
 
@@ -48,7 +66,6 @@ function entity_destroyed(msg) {
     entity = entities[id];
 
     delete entities[id];
-    delete board[[entity.x, entity.y]];
 }
 
 function entity_changed(json_msg) {
