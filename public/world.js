@@ -10,7 +10,7 @@ function populate() {
   scene.add(plane);
 
   // Light
-  var directionalLight = new THREE.DirectionalLight( 0xffe699, 0.5 );
+  var directionalLight = new THREE.DirectionalLight( 0xffe699, 1 );
   directionalLight.position.set(4, 5, 3);
   directionalLight.target = plane;
   directionalLight.castShadow = true;
@@ -20,17 +20,17 @@ function populate() {
   scene.add( light );
 
   // Load castle
-  for (var i = 0; i < 10; i++) {
-    for (var j = 0; j < 10; j++) {
-      if ((i+j) % 2 == 0)
-        continue;
-      var castle = createMesh("castle");
-      castle.castShadow = true;
-      castle.receiveShadow = true;
-      castle.material = new THREE.MeshLambertMaterial();
-      castle.position.x = i - 4.5;
-      castle.position.z = j - 4.5;
-      scene.add(castle);
-    }
-  }
+
+  var castle = createMesh("castle");
+    console.log(castle.children);
+    castle.children.forEach(function(child) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+    });
+    castle.position.x = 0;
+    castle.position.z = -4.5;
+    castle.rotation.y = Math.PI;
+    scene.add(castle);
+
+
 }

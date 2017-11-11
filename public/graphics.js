@@ -29,8 +29,12 @@ camera.rotation.x -= Math.PI / 4;
 // Start the renderer.
 renderer.setSize(WIDTH, HEIGHT);
 
-// instantiate a loader
-var loader = new THREE.OBJLoader();
+// instantiate loaders
+var objLoader = new THREE.OBJLoader();
+var mtlLoader = new THREE.MTLLoader();
+
+// // set mtl path
+// mtlLoader.setPath('assets/');
 
 function initGraphics() {
   // Get the DOM element to attach to
