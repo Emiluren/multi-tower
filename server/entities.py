@@ -28,9 +28,8 @@ class Entity:
     def position_tuple(self):
         return (self.x, self.y)
 
-
     def __repr__(self):
-        return 'Castle with health: {}'.format(self.health)
+        return '{} with health: {}'.format(self.typ, self.health)
 
 
 class Minion:
