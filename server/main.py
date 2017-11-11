@@ -53,7 +53,7 @@ async def update_player(player):
         spawn_y = castle.y
 
         minion = entities.Entity(x, y, "minion", player.name)
-        board_add_entity(tower)
+        board_add_entity(minion)
 
         await broadcast_message('entity_created', tower.to_list())
 
