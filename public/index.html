@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css"></link>
     <script src="https://threejs.org/build/three.min.js"></script>
 
-    <!-- Debug-läge  -->
+    <!-- Debug mode  -->
     <script>var debug = true;</script>
 
     <script src="ui.js"></script>
@@ -25,6 +25,7 @@
     <script src="game.js"></script>
   </head>
 
+  <!-- Player name modal -->
   <body onload="start().then(start2);" style="margin: 0px;">
     <div class="ui basic modal" id ="player_login">
       <div class="ui huge input">
@@ -34,17 +35,24 @@
             Play!
         </button>
       </div>
-
     </div>
 
+    <!-- Healthbar -->
     <div class="ui dark_overlay small inverted green progress" id="healthbar_container" data-value="30" data-total="100">
         <div class="bar"></div>
         <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
     </div>
 
+    <!-- Sidebar -->
     <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>
-    <div class="ui dark_overlay wide sidebar left vertical"> HÄR ÄR EN MASSA FIN TEXT</div>
+    <div class="ui dark_overlay wide sidebar left vertical">
+        <h3 class="ui header inverted">Section Two</h3>
+        <div class="ui section divider inverted"></div>
+        <h3 class="ui header inverted">Selected: <span id="selected_type" class="ui label red">Enemy tower</h3>
 
+    </div>
+
+    <!-- three.js 3D rendering -->
     <div class="pusher" id="container"></div>
 
 
