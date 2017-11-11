@@ -9,9 +9,10 @@ class Player:
 
 class Castle:
 
-    def __init__(self, player):
+    def __init__(self, player, uid):
         self.player = player
         self.health = MAX_HEALTH
+        self.uid = uid
     
 
     def __repr__(self):

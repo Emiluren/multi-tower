@@ -6,6 +6,8 @@ import threading
 import time
 import urllib.parse
 import random
+import json
+import uuid
 
 TICK_TIME = 1
 
@@ -51,11 +53,17 @@ def generate_castle_position():
     raise Exception('WTF Y U NO GENERATE POS')
 
 
-def assign_castle(player):
+async def assign_castle(player):
     pos = generate_castle_position()
-    castle = entities.Castle(player)
+    castle = entities.Castle(player, uuid.uuid4().hex)
     castles[pos] = castle
     board[pos] = castle
+    x, y = pos
+    await broadcast_message('entity_created', [x, y, 'castle', 100, 1, castle.uid])
+
+
+async def broadcast_message(message_type, data, sid=None):
+    await sio.emit(message_type, data=json.dumps(data), room=sid)
 
 
 async def index(request):
@@ -64,13 +72,13 @@ async def index(request):
         return web.Response(text=f.read(), content_type='text/html')
 
 @sio.on('connect')
-def connect(sid, environ):
+async def connect(sid, environ):
     board_lock.acquire()
     query = urllib.parse.parse_qs(environ['QUERY_STRING'])
     print("connect ", sid, query)
     p = entities.Player()
     players[sid] = p
-    assign_castle(p)
+    await assign_castle(p)
     board_lock.release()
 
 @sio.on('chat message')
