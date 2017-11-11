@@ -74,6 +74,12 @@ def is_castle_position_free(pos):
     return True
 
 
+def find_player(sid):
+    for player in players.values():
+        if sid in player.sids:
+            return player
+
+
 def board_add_entity(entity):
     pos = entity.position_tuple()
     uid = entity.uid
@@ -107,15 +113,18 @@ def board_remove_entity(uid):
 def generate_castle_position():
     if not castles:
         return (0, 0)
+    it = 0
     while True:
-        r1 = random.randint(-1, 1)
-        r2 = random.randint(-1, 1)
+        r1 = random.randint(-1 - it, 1 + it)
+        r2 = random.randint(-1 - it, 1 + it)
         direction = (r1*SPAWN_DISTANCE, r2*SPAWN_DISTANCE)
         for castle in castles.values():
             pos = castle.position_tuple()
             new_pos = vec.add(direction, pos)
             if is_castle_position_free(pos):
                 return new_pos
+        it += 1
+        # print(castles)
 
 
 async def send_tick():
@@ -153,10 +162,14 @@ async def connect(sid, environ):
     print("connect ", sid, query)
     name = query['name'][0]
 
-    if name not in players.values():
+    print('NAME: ', name)
+    print('PLAYERS: ', players)
+    if name not in players:
+        players[name] = entities.Player(name, [sid])
         await assign_castle(name)
         await broadcast_message('new_player', name)
-    players[sid] = name
+    else:
+        players[name].sids.append(sid)
     await send_world_to_player(sid)
     board_lock.release()
 
@@ -166,8 +179,8 @@ async def on_request_tower(sid, data):
     print("Tower requested: ", data)
 
     x, y, typ = data
-    player_name = players[sid]
-    tower = entities.Entity(x, y, typ, player_name)
+    player = find_player(sid)
+    tower = entities.Entity(x, y, typ, player.name)
     board_add_entity(tower)
 
     await broadcast_message('entity_created', tower.to_list())
@@ -176,7 +189,8 @@ async def on_request_tower(sid, data):
 @sio.on('disconnect')
 def disconnect(sid):
     board_lock.acquire()
-    del players[sid]
+    player = find_player(sid)
+    player.sids.remove(sid)
     board_lock.release()
     print('disconnect ', sid)
 
