@@ -103,6 +103,15 @@ async def fire_tower_if_in_range(tower):
 async def actually_fire_the_damn_tower(minion_id, tower):
     board_entities[minion_id].health -= tower.level * \
             entities.TOWER_DAMAGES[tower.typ]
+    await broadcast_message('tower_fired', [tower.uid, minion_id])
+    if board_entities[minion_id].health <= 0:
+        kill_minion_locally(minion_id)
+        await broadcast_message('entity_destroyed', minion_id)
+
+
+def kill_minion_locally(minion_id):
+    board_remove_entity(minion_id)
+    del minions[uid]
 
 
 def is_castle_position_free(pos):
