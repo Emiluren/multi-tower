@@ -43,10 +43,10 @@
       $(document).ready(function(){
           $('.sidebar')
               .sidebar({
-                  overlay: true,
                   closable: false,
                   dimPage: false
               })
+              .sidebar('setting', 'transition', 'overlay')
               .sidebar('toggle');
 
           $('.ui.modal').modal('setting', 'closable', false);
