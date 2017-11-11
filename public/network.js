@@ -41,7 +41,7 @@ function board_move_entity(id, new_pos) {
 }
 
 function entity_created(json_msg) {
-    console.log('Entity created: ' + json_msg)
+    //console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
 
     let id = msg[0];

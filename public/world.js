@@ -3,6 +3,8 @@ var grid = 0;
 var gridStack = 0;
 var plane;
 
+var previewTower;
+
 function populate() {
 
   // Create game plane
@@ -28,10 +30,24 @@ function populate() {
   var light = new THREE.AmbientLight( 0x202020 ); // soft white light
   scene.add( light );
 
-  // Load castle
+  // Load tower
+  previewTower = createMesh("tower");
+
 }
 
 function updateWorld(delta) {
   gridStack = (gridStack + delta / 1000.0) % (Math.PI * 2);
   grid.position.y = .1 + (Math.sin(gridStack) + 1) / 16;
+
+  if (adding) {
+    previewTower.position.set(tile_pos.x, 0, tile_pos.y);
+  }
+}
+
+function addingMode() {
+  if (adding) {
+    scene.add(previewTower);
+  } else {
+    scene.remove(previewTower);
+  }
 }

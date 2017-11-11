@@ -3,7 +3,8 @@ var meshData = {};
 
 var meshLoadList = [
   ['castle', 'assets/Castle'],
-  ['minion', 'assets/minion_lvl1']
+  ['minion', 'assets/minion_lvl1'],
+  ['tower', 'assets/tower_lvl1']
 ]
 
 function loadOBJFiles() {

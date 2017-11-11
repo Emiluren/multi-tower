@@ -42,3 +42,7 @@ function initGraphics() {
   // DOM element.
   container.appendChild(renderer.domElement);
 }
+
+function showPreview(type){
+
+}

@@ -1,5 +1,8 @@
+var adding = false;
+
 var raycaster = new THREE.Raycaster();
 var mouse_pos = new THREE.Vector2();
+var tile_pos  = new THREE.Vector2();
 
 
 var momentum = new THREE.Vector3(0, 0, 0);
@@ -31,7 +34,16 @@ function update(delta) {
   camera.position.y += momentum.y*speed
   camera.position.z += momentum.z*speed
 
+  if(adding)
+    raycast();
+
   updateWorld(delta);
+}
+
+function raycast() {
+  raycaster.setFromCamera( mouse_pos, camera );
+  var intersects = raycaster.intersectObject( plane );
+  tile_pos = new THREE.Vector2(Math.round(intersects[0].point.x), Math.round(intersects[0].point.z));
 }
 
 // Getting mouse position
@@ -43,10 +55,8 @@ $(document).mousemove(function(event) {
 
 // Raycast on mouse click
 $(document).click(function () {
-    console.log("asjkdlakdjsakdjakjskadjksjd");
-    raycaster.setFromCamera( mouse_pos, camera );
-    var intersects = raycaster.intersectObject( plane );
-    request_create_tower(Math.round(intersects[0].point.x), Math.round(intersects[0].point.z));
+    raycast();
+    //equest_create_tower();
 });
 
 function draw() {
