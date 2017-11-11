@@ -9,6 +9,15 @@ TOWER_FREQUENCIES = {
     'tower_arrows' : 10
 }
 
+# Controls the range of each tower
+TOWER_RANGES = {
+    'tower_arrows': 5
+}
+
+TOWER_DAMAGES = {
+    'tower_arrows': 10
+}
+
 class Player:
 
     def __init__(self, name, sids):
@@ -29,7 +38,7 @@ class Entity:
         self.level = 1
 
     def to_list(self):
-        return [self.uid, self.x, self.y, 
+        return [self.uid, self.x, self.y,
                 self.typ, self.health, self.level, self.player_name]
 
     def position_tuple(self):

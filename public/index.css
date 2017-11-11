@@ -1,6 +1,7 @@
 body {
     margin: 0px;
     user-select: none;
+    overflow: hidden;
 }
 
 .dark_overlay {

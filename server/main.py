@@ -25,9 +25,7 @@ async def run(app):
             except asyncio.CancelledError:
                 raise
             except Exception:
-                print("hej")
                 traceback.print_exc()
-                print("hopp")
 
     except asyncio.CancelledError:
         pass
@@ -64,7 +62,7 @@ async def update_player(player):
         castle = castles[player.name]
 
         # TODO: find optimal side to spawn on given target
-        spawn_x = castle.x + 1
+        spawn_x = castle.x + 2
         spawn_y = castle.y
 
         minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
@@ -81,17 +79,30 @@ async def timer_tick():
         await update_player(players[player_name])
     for uid in towers:
         tower, ticks = towers[uid]
-        ticks += TICK_TIME * TOWER_FREQUENCIES[tower.typ]
+        ticks += TICK_TIME * \
+                entities.TOWER_FREQUENCIES[tower.typ] / tower.level
         if ticks >= 1 / TICK_TIME:
-            await fire_tower(tower)
+            await fire_tower_if_in_range(tower)
             ticks = 0
         towers[uid] = (tower, ticks)
 
     board_lock.release()
 
 
-async def fire_tower(tower):
-    pos = tower.position_tuple()
+async def fire_tower_if_in_range(tower):
+    tower_pos = tower.position_tuple()
+    tower_range = entities.TOWER_RANGES[tower.typ] * tower.level
+    for minion_id in minions:
+        minion_pos = board_entities[minion_id].position_tuple()
+        if vec.is_within_bounds(minion_pos, tower_pos, tower_range):
+            await actually_fire_the_damn_tower(minion_id, tower)
+            print('FIRE!')
+            return
+
+
+async def actually_fire_the_damn_tower(minion_id, tower):
+    board_entities[minion_id].health -= tower.level * \
+            entities.TOWER_DAMAGES[tower.typ]
 
 
 def is_castle_position_free(pos):
@@ -149,7 +160,7 @@ def generate_castle_position():
         for castle in castles.values():
             pos = castle.position_tuple()
             new_pos = vec.add(direction, pos)
-            if is_castle_position_free(pos):
+            if is_castle_position_free(new_pos):
                 return new_pos
         it += 1
         # print(castles)
