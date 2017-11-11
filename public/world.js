@@ -12,31 +12,15 @@ function populate() {
 
   // Light
   var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+  directionalLight.position.x += 2;
   directionalLight.target = plane;
   scene.add( directionalLight );
 
-  // load a resource
-  loader.load(
-  	// resource URL
-  	'assets/Castle.obj',
-  	// called when resource is loaded
-  	function ( object ) {
-      object.position.z -= 10;
-      object.position.y -= 2;
-  		scene.add( object );
+  // Load castle
+  var castle = createMesh("castle");
+  var t_castle = createMesh("test");
+  t_castle.position.z -= 10;
 
-  	},
-  	// called when loading is in progresses
-  	function ( xhr ) {
-
-  		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-  	},
-  	// called when loading has errors
-  	function ( error ) {
-
-  		console.log( 'An error happened' );
-
-  	}
-  );
+  scene.add(castle);
+  scene.add(t_castle);
 }
