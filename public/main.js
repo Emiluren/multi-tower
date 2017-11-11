@@ -4,15 +4,14 @@ var running = false;
 var previousTime = new Date().getTime();
 
 function start() {
-  // Init three js
-  initGraphics();
+    // Init three js
+    initGraphics();
 
-  // Load object files
-  return loadOBJFiles();
+    // Load object files
+    return loadOBJFiles();
 }
 
-function start2() {
-    console.log("start2");
+function start2(meshData) {
     // Populate world
     populate();
 
