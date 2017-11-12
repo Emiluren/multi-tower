@@ -92,7 +92,7 @@ def is_obstructed(x, y):
 async def update_player(player):
     player.spawn_timer -= 1
     if player.spawn_timer <= 0:
-        player.spawn_timer = 0
+        player.spawn_timer = entities.SPAWN_INTERVAL
 
         castle = castles[player.name]
         enemy_castle = None
@@ -246,7 +246,7 @@ async def assign_castle(player_name):
     castle = entities.Entity(x, y, 'castle', player_name)
     castles[player_name] = castle
     board_add_entity(castle)
-    await broadcast_message('entity_created', 
+    await broadcast_message('entity_created',
                             [castle.uid, x, y, 'castle', 100, 1, player_name])
 
 
@@ -297,7 +297,7 @@ async def on_request_tower(sid, data):
         towers[tower.uid] = (tower, 0)
         players[player.name].cash -= cost
         await broadcast_message('entity_created', tower.to_list())
-        await broadcast_message('player_cash_changed', 
+        await broadcast_message('player_cash_changed',
                                 [player.name, player.cash])
     else:
         print(player.name + ' cannot afford to build ' + typ)
@@ -316,7 +316,7 @@ async def on_request_upgrade(sid, data):
             entity.level += 0.5
             await broadcast_message('entity_changed',
                                    [entity_id, 'level', entity.level])
-            await broadcast_message('player_cash_changed', 
+            await broadcast_message('player_cash_changed',
                                     [player.name, player.cash])
         else:
             print(player.name + ' cannot afford this upgrade!')
@@ -364,4 +364,3 @@ def start_server():
 
 if __name__ == '__main__':
     start_server()
-
