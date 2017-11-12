@@ -82,9 +82,7 @@ def is_obstructed(x, y):
     if (x, y) not in board:
         return False
 
-    print(board[(x, y)])
     for eid in board[(x, y)]:
-        print(eid)
         if board_entities[eid].typ in solid_types:
             return True
 
@@ -111,11 +109,19 @@ async def update_player(player):
 
             minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
             board_add_entity(minion)
-            minions[minion.uid] = pathfinding.find_path(
+            path = pathfinding.find_path(
                 (spawn_x, spawn_y), (enemy_castle.x, enemy_castle.y), is_obstructed)
-            print(minions)
+            minions[minion.uid] = path[1:]
 
             await broadcast_message('entity_created', minion.to_list())
+
+
+async def update_minion(minion_id):
+    path = minions[minion_id]
+    if path:
+        new_pos = path.pop(0)
+        board_move_entity(minion_id, new_pos)
+        await broadcast_message('entity_changed', [minion_id, 'position', new_pos])
 
 
 async def slow_timer_tick():
@@ -123,6 +129,8 @@ async def slow_timer_tick():
     await send_tick()
     for player_name in players:
         await update_player(players[player_name])
+    for minion in minions:
+        await update_minion(minion)
     board_lock.release()
 
 
@@ -147,7 +155,6 @@ async def actually_fire_the_damn_tower(minion_id, tower):
 
 
 def kill_minion_locally(minion_id):
-    print(board)
     board_try_remove_entity(minion_id)
     del minions[minion_id]
 
@@ -177,11 +184,12 @@ def board_add_entity(entity):
 
 
 def board_move_entity(uid, dest_pos):
-    board_try_remove_entity(uid)
-    board_add_entity(uid, dest_pos)
     x, y = dest_pos
-    board_entities[uid].x = x
-    board_entities[uid].y = y
+    entity = board_entities[uid]
+    entity.x = x
+    entity.y = y
+    board_try_remove_entity(uid)
+    board_add_entity(entity)
 
 
 def board_try_remove_entity(uid):
