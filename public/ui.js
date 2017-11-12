@@ -3,6 +3,11 @@ $(document).ready(function(){
     $('.ui.modal').modal('setting', 'closable', false);
     if (!debug) $('.ui.modal').modal('show');
 
+    // Set focus after 100 ms
+    setTimeout(function(){
+        $('#player_name_text').focus()
+    }, 100);
+
     tryLogin = function(event) {
         if ($('#player_name_text').val()){
             console.log("Player "+$('#player_name_text').val()+" enters");
@@ -47,6 +52,13 @@ $(document).ready(function(){
     $('#create_tower').click(function(){ adding = !adding; addingMode(); $('#create_tower').toggleClass('active');});
     $('#delete_tower').click(function(){  request_delete(selected.id); });
     $('#upgrade_tower').click(function(){ request_upgrade(selected.id); });
+
+    // Stop building on escape
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27 && adding) { // escape key maps to keycode `27`
+            adding = false; addingMode(); $('#create_tower').removeClass('active');
+        }
+    });
 
 
 });
