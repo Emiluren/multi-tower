@@ -58,6 +58,9 @@ players = {}
 # uuid -> (Entity, ticks since last fired)
 towers = {}
 
+global towers_changed
+towers_changed = False
+
 # uuid -> (Path)
 minions = {}
 
@@ -133,15 +136,29 @@ async def update_player(player):
             await broadcast_message('entity_created', minion.to_list())
 
 
+def recalculate_minion_paths():
+    for minion_id in minions.keys():
+        start = minions[minion_id][0]
+        end = minions[minion_id][-1]
+        path = pathfinding.find_path(start, end, is_obstructed)
+        minions[minion_id] = path
+
+
+
 def update_minion(minion_id):
     path = minions[minion_id]
     entity_changed = None
     minion_to_destroy = None
+
+    global towers_changed
+    if towers_changed:
+        recalculate_minion_paths()
+        towers_changed = False
+
     if path:
         new_pos = path.pop(0)
         board_move_entity(minion_id, new_pos)
         entity_changed = [minion_id, 'position', new_pos]
-        # await broadcast_message('entity_changed', )
     else:
         minion_to_destroy = minion_id
     return entity_changed, minion_to_destroy 
@@ -197,7 +214,8 @@ def fire_tower_if_in_range(tower):
     tower_range = entities.TOWER_RANGES[tower.typ] * tower.level
     for minion_id in minions.keys():
         minion_pos = board_entities[minion_id].position_tuple()
-        if vec.is_within_bounds(minion_pos, tower_pos, tower_range):
+        if vec.is_within_bounds(minion_pos, tower_pos, tower_range) and \
+           board_entities[minion_id].player_name != tower.player_name:
             # print('FIRE!')
             return actually_fire_the_damn_tower(minion_id, tower)
     return None, None, None
@@ -356,6 +374,10 @@ async def on_request_tower(sid, data):
         board_add_entity(tower)
         towers[tower.uid] = (tower, 0)
         players[player.name].cash -= cost
+
+        global towers_changed
+        towers_changed = True
+
         await broadcast_message('entity_created', tower.to_list())
         await broadcast_message('player_cash_changed',
                                 [player.name, player.cash])
