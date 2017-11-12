@@ -139,7 +139,7 @@ function entity_changed(msg) {
         entities[id].y = data[1];
         if (entities[id].type == "minion") {
           var dir = new THREE.Vector2(Math.sign(data[0] - entities[id].mesh.position.x), Math.sign(data[1] - entities[id].mesh.position.z));
-          movingMinions.push([id, dir]);
+          movingMinions.push([entities[id], dir]);
         }
     } else if (kind == 'level') {
         entities[id].level = data;

@@ -43,16 +43,12 @@ function updateWorld(delta) {
 
   //updates all the current projectiles
   //console.log("projectiles:",projectiles);
-<<<<<<< HEAD
   updateProjectiles(delta).then(deleteCollidedProjectiles);
-  
-=======
-  //updateProjectiles(delta).then(deleteProjectiles);
 
   // Moving minions
   movingMinions = movingMinions.filter(function(movement) {
-    var e_pos = new THREE.Vector3(entities[movement[0]].x, 0, entities[movement[0]].y);
-    var m_pos = entities[movement[0]].mesh.position;
+    var e_pos = new THREE.Vector3(movement[0].x, 0, movement[0].y);
+    var m_pos = movement[0].mesh.position;
     m_pos.x += movement[1].x * delta / 1000.0;
     m_pos.z += movement[1].y * delta / 1000.0;
     if (Math.sign(e_pos.x-m_pos.x) != Math.sign(movement[1].x) ||
@@ -64,7 +60,6 @@ function updateWorld(delta) {
     return true;
   });
 
->>>>>>> f53d2e85c4319139286e56f47550d52797eb04da
   if (adding) {
     previewTower.position.set(tile_pos.x, 0, tile_pos.y);
   }
