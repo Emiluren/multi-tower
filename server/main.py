@@ -190,7 +190,7 @@ async def slow_timer_tick():
         castle = find_castle_near(minion.position_tuple())
         assert castle is not None
         damage = entities.MINION_DAMAGE * minion.level
-        castle.health -= damage
+        castle.health = max(castle.health - damage, 0)
         # reward the owner a bit
         players[minion.player_name].cash += \
                 entities.CASTLE_DAMAGE_REWARD * damage
