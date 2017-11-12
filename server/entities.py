@@ -19,6 +19,10 @@ TOWER_DAMAGES = {
     'tower_arrows': 10
 }
 
+TOWER_BUILD_COSTS = {
+    'tower_arrows': 15
+}
+
 TOWER_UPGRADE_COSTS = {
     'tower_arrows': 10
 }
@@ -29,7 +33,7 @@ class Player:
         self.name = name
         self.sids = sids
         self.spawn_timer = SPAWN_INTERVAL
-        self.cash = 0
+        self.cash = 100
 
 
 class Entity:

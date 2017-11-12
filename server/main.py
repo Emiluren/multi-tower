@@ -137,7 +137,7 @@ async def slow_timer_tick():
 async def fire_tower_if_in_range(tower):
     tower_pos = tower.position_tuple()
     tower_range = entities.TOWER_RANGES[tower.typ] * tower.level
-    for minion_id in minions:
+    for minion_id in minions.keys():
         minion_pos = board_entities[minion_id].position_tuple()
         if vec.is_within_bounds(minion_pos, tower_pos, tower_range):
             await actually_fire_the_damn_tower(minion_id, tower)
@@ -290,11 +290,17 @@ async def on_request_tower(sid, data):
 
     x, y, typ = data
     player = find_player(sid)
-    tower = entities.Entity(x, y, typ, player.name)
-    board_add_entity(tower)
-    towers[tower.uid] = (tower, 0)
-
-    await broadcast_message('entity_created', tower.to_list())
+    cost = entities.TOWER_BUILD_COSTS[typ]
+    if cost <= player.cash:
+        tower = entities.Entity(x, y, typ, player.name)
+        board_add_entity(tower)
+        towers[tower.uid] = (tower, 0)
+        players[player.name].cash -= cost
+        await broadcast_message('entity_created', tower.to_list())
+        await broadcast_message('player_cash_changed', 
+                                [player.name, player.cash])
+    else:
+        print(player.name + ' cannot afford to build ' + typ)
 
 
 @sio.on('request_upgrade')
@@ -304,12 +310,12 @@ async def on_request_upgrade(sid, data):
     entity = board_entities[entity_id]
     player = find_player(sid)
     if entity.is_tower():
-        cost = TOWER_UPGRADE_COSTS[tower]
+        cost = entities.TOWER_UPGRADE_COSTS[entity.typ]
         if cost <= player.cash:
             players[player.name].cash -= cost
-            tower.level += 0.5
+            entity.level += 0.5
             await broadcast_message('entity_changed',
-                                   [entity_id, 'level', tower.level])
+                                   [entity_id, 'level', entity.level])
             await broadcast_message('player_cash_changed', 
                                     [player.name, player.cash])
         else:
