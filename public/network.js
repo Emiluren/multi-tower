@@ -62,27 +62,48 @@ function entity_created(msg) {
     let x = msg[1];
     let y = msg[2];
     let m;
+    let hb = false;
     switch(type) {
     case TYPE_TOWER_ARROWS:
         m = createMesh("tower");
         m.position.set(x, 0, y);
         scene.add(m);
+        var g_pi = new THREE.CylinderGeometry( .3, .3, .1, 8 );
+        var m_pi = new THREE.MeshPhongMaterial( {color: generate_color(msg[6])} );
+        var pi = new THREE.Mesh( g_pi, m_pi );
+        m.add(pi);
         break;
     case TYPE_CASTLE:
         m = createMesh("castle");
         m.position.set(x, 0, y);
-        m.rotation.y = Math.PI / 2;
         scene.add(m);
+        hb = createHealthbar(0, 0, 1, 3);
+        m.add(hb);
+        var g_pi = new THREE.CylinderGeometry( 2, 2, .1, 8 );
+        var m_pi = new THREE.MeshPhongMaterial( {color: generate_color(msg[6])} );
+        var pi = new THREE.Mesh( g_pi, m_pi );
+        m.add(pi);
         break;
     case TYPE_MINION:
         m = createMesh("minion");
         m.position.set(x, 0, y);
         scene.add(m);
+        hb = createHealthbar(0, 0, .4, .8);
+        m.add(hb);
+        var g_pi = new THREE.CylinderGeometry( .2, .2, .1, 8 );
+        var m_pi = new THREE.MeshPhongMaterial( {color: generate_color(msg[6])} );
+        var pi = new THREE.Mesh( g_pi, m_pi );
+        m.add(pi);
         break;
     }
 
+    if (hb) {
+      updateHealthbar(hb, msg[4]);
+      console.log("asdas " + msg[4]);
+    }
+
     let entity = {id: id, x: x, y: y, type: type, health: msg[4],
-        level: msg[5], player_name: msg[6], mesh: m};
+        level: msg[5], player_name: msg[6], mesh: m, hb: hb};
     m.entity = id;
     entities[id] = entity;
     board_add_entity(id, x, y);
@@ -132,6 +153,9 @@ function entity_changed(msg) {
     let data = msg[2];
     if (kind == 'health') {
         entities[id].health = data;
+        if (entities[id].hb) {
+          updateHealthbar(entities[id].hb, msg[2]);
+        }
         if (entities[id].type == 'castle' && entities[id].player_name == me) setHealthbar(data);
     } else if (kind == 'position') {
         board_move_entity(id, data[0], data[1]);
@@ -170,6 +194,15 @@ function entities_created(json_msg) {
 
 function tick(msg) {
     //console.log('TICK')
+}
+
+function clear_world(msg) {
+    console.log("TODO: remove graphical stuff");
+
+    entities = {};
+    board = {};
+    players = [];
+    cash = 0;
 }
 
 function request_create_tower(tile_x, tile_y) {
@@ -214,4 +247,5 @@ function connect_to_server() {
     socket.on('player_cash_changed', player_cash_changed);
     socket.on('game_over', game_over);
     socket.on('tick', tick);
+    socket.on('clear_world', clear_world);
 }
