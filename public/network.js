@@ -189,6 +189,10 @@ function request_upgrade(entity_id) {
     socket.emit('request_upgrade', entity_id);
 }
 
+function request_attack(player_name) {
+    socket.emit('request_attack', player_name);
+}
+
 function connect_to_server() {
     me = $('#player_name_text').val();
     console.log('I am: ' + me);
