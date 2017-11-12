@@ -49,9 +49,13 @@ function player_cash_changed(json_msg){
     $('#indicator_money').text(cash);
 }
 
-function entity_created(json_msg) {
+function handle_entity_created(json_msg) {
     console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
+    entity_created(msg)
+}
+
+function entity_created(msg) {
 
     let id = msg[0];
     let type = msg[3];
@@ -149,6 +153,12 @@ function entities_destroyed(json_msg) {
     entities.forEach(entity_destroyed);
 }
 
+function entities_created(json_msg) {
+    console.log('Entites created: ' + json_msg)
+    let entities = JSON.parse(json_msg);
+    entities.forEach(entity_created);
+}
+
 function tick(msg) {
     //console.log('TICK')
 }
@@ -174,10 +184,11 @@ function connect_to_server() {
     me = $('#player_name_text').val();
     console.log('I am: ' + me);
     socket = io({ query: { name:  me} });
-    socket.on('entity_created', entity_created);
+    socket.on('entity_created', handle_entity_created);
     socket.on('entity_destroyed', handle_entity_destroyed);
     socket.on('entity_changed', handle_entity_changed);
     socket.on('entities_destroyed', entities_destroyed);
+    socket.on('entities_created', entities_created);
     socket.on('entities_changed', entities_changed);
     socket.on('towers_fired', towers_fired);
     socket.on('new_player', new_player);
