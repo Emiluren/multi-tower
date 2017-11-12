@@ -90,7 +90,7 @@ function entity_created(msg) {
     if (entity.type == 'castle' && entities[id].player_name == me) {
         setHealthbar(entity.health);
         my_castle = entity;
-        goToCastle();
+        // goToCastle();
     }
 }
 
@@ -112,11 +112,11 @@ function handle_entity_destroyed(msg) {
 }
 
 function entity_destroyed(id) {
+    console.log("Entity destoyed!!");
     let entity = entities[id];
     if (selected.id == id) deselect();
-
+    deleteNoTargetProjectiles(id).then(delete entities[id]);
     scene.remove(entity.mesh);
-    delete entities[id];
 }
 
 
@@ -139,7 +139,7 @@ function entity_changed(msg) {
         entities[id].y = data[1];
         if (entities[id].type == "minion") {
           var dir = new THREE.Vector2(Math.sign(data[0] - entities[id].mesh.position.x), Math.sign(data[1] - entities[id].mesh.position.z));
-          movingMinions.push([id, dir]);
+          movingMinions.push([entities[id], dir]);
         }
     } else if (kind == 'level') {
         entities[id].level = data;

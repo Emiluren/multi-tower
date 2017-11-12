@@ -135,11 +135,22 @@ async def update_player(player):
 
 def update_minion(minion_id):
     path = minions[minion_id]
+    entity_changed = None
+    minion_to_destroy = None
     if path:
         new_pos = path.pop(0)
         board_move_entity(minion_id, new_pos)
-        return [minion_id, 'position', new_pos]
+        entity_changed = [minion_id, 'position', new_pos]
         # await broadcast_message('entity_changed', )
+    else:
+        minion_to_destroy = minion_id
+    return entity_changed, minion_to_destroy 
+
+
+def find_castle_near(pos):
+    for castle in castles.values():
+        if vec.is_within_bounds(castle.position_tuple(), pos, 7):
+            return castle
     return None
 
 
@@ -149,10 +160,32 @@ async def slow_timer_tick():
     for player_name in players:
         await update_player(players[player_name])
     entities_changed = []
+    minions_to_destroy = []
     for minion in minions:
-        entity_changed = update_minion(minion)
+        entity_changed, minion_to_destroy = update_minion(minion)
         if entity_changed is not None:
             entities_changed.append(entity_changed)
+        if minion_to_destroy is not None:
+            minions_to_destroy.append(minion_to_destroy)
+
+    for minion_id in minions_to_destroy:
+        minion = board_entities[minion_id]
+        castle = find_castle_near(minion.position_tuple())
+        assert castle is not None
+        damage = entities.MINION_DAMAGE * minion.level
+        castle.health -= damage
+        # reward the owner a bit
+        players[minion.player_name].cash += \
+                entities.CASTLE_DAMAGE_REWARD * damage
+        await broadcast_message('player_cash_changed', 
+                                [minion.player_name,
+                                players[minion.player_name].cash])
+        entities_changed.append([castle.uid, 'health', castle.health])
+        kill_minion_locally(minion_id)
+
+    if minions_to_destroy:
+        await broadcast_message('entities_destroyed', minions_to_destroy)
+
     if entities_changed:
         await broadcast_message('entities_changed', entities_changed)
 
