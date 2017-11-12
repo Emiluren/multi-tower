@@ -113,6 +113,10 @@ async def actually_fire_the_damn_tower(minion_id, tower):
     board_entities[minion_id].health -= tower.level * \
             entities.TOWER_DAMAGES[tower.typ]
     await broadcast_message('tower_fired', [tower.uid, minion_id])
+    await broadcast_message('entity_changed',
+                            [minion_id, 'health',
+                             board_entities[minion_id].health])
+    print(board_entities[minion_id].health)
     if board_entities[minion_id].health <= 0:
         kill_minion_locally(minion_id)
         await broadcast_message('entity_destroyed', minion_id)
