@@ -132,8 +132,12 @@ function request_create_tower(tile_x, tile_y) {
     socket.emit('request_tower', [tile_x, tile_y, 'tower_arrows']);
 }
 
-function request_delete_tower(entity_id) {
+function request_delete(entity_id) {
     socket.emit('request_delete', entity_id);
+}
+
+function request_upgrade(entity_id) {
+    socket.emit('request_upgrade', entity_id);
 }
 
 function connect_to_server() {

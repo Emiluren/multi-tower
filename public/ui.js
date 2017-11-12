@@ -45,8 +45,8 @@ $(document).ready(function(){
 
     // Add button - events
     $('#create_tower').click(function(){ adding = !adding; addingMode(); $('#create_tower').toggleClass('active');});
-    $('#delete_tower').click(function(){ request_delete_tower(selected.id); });
-    $('#upgrade_tower').click(function(){ request_delete_tower(selected.id); });
+    $('#delete_tower').click(function(){  request_delete(selected.id); });
+    $('#upgrade_tower').click(function(){ request_upgrade(selected.id); });
 
 
 });
