@@ -147,7 +147,8 @@ async def actually_fire_the_damn_tower(minion_id, tower):
 
 
 def kill_minion_locally(minion_id):
-    board_remove_entity(minion_id)
+    print(board)
+    board_try_remove_entity(minion_id)
     del minions[minion_id]
 
 
@@ -171,28 +172,35 @@ def board_add_entity(entity):
     if pos in board:
         board[pos].append(uid)
     else:
-        board[pos] = [pos]
+        board[pos] = [uid]
     board_entities[uid] = entity
 
 
 def board_move_entity(uid, dest_pos):
-    board_remove_entity(uid)
+    board_try_remove_entity(uid)
     board_add_entity(uid, dest_pos)
     x, y = dest_pos
     board_entities[uid].x = x
     board_entities[uid].y = y
 
 
-def board_remove_entity(uid):
+def board_try_remove_entity(uid):
+    """
+    Returns True if successful, false if not
+    """
     found_pos = None
     for pos, ids in board.items():
         if uid in ids:
             found_pos = pos
-    assert found_pos is not None
+            break
+    if found_pos is None:
+        raise Exception("ID: ", uid)
+        return False
     board[found_pos].remove(uid)
     if not board[found_pos]:
         del board[found_pos]
     del board_entities[uid]
+    return True
 
 
 def generate_castle_position():
@@ -293,7 +301,14 @@ async def on_request_upgrade(sid, data):
 
 @sio.on('request_delete')
 async def on_request_delete(sid, data):
-    pass
+    entity_id = data
+    entity = board_entities[entity_id]
+    if entity.is_tower():
+        del towers[entity_id]
+    elif entity.is_minion():
+        del minions[entity_id]
+    del board_entities[entity_id]
+    await broadcast_message('entity_destroyed', entity_id)
 
 
 @sio.on('disconnect')
