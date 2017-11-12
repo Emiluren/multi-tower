@@ -53,6 +53,18 @@ function update(delta) {
   updateWorld(delta);
 }
 
+
+var hammertime = new Hammer(renderer.domElement, {});
+hammertime.on('pan', function(ev) {
+    momentum.x -= ev.velocityX*0.5;
+    momentum.z -= ev.velocityY*0.5;
+});
+hammertime.get('pinch').set({ enable: true });
+hammertime.on('pinch', function(ev) {
+    //momentum.y += ev.scale;
+    console.log(ev);
+});
+
 function raycast_toPlane() {
   raycaster.setFromCamera( mouse_pos, camera );
   var intersects = raycaster.intersectObject( plane );
