@@ -68,6 +68,10 @@ function entity_created(msg) {
         m = createMesh("tower");
         m.position.set(x, 0, y);
         scene.add(m);
+        var g_pi = new THREE.CylinderGeometry( .3, .3, .1, 8 );
+        var m_pi = new THREE.MeshPhongMaterial( {color: generate_color(msg[6])} );
+        var pi = new THREE.Mesh( g_pi, m_pi );
+        m.add(pi);
         break;
     case TYPE_CASTLE:
         m = createMesh("castle");
@@ -76,6 +80,10 @@ function entity_created(msg) {
         scene.add(m);
         hb = createHealthbar(0, 0, 1, 3);
         m.add(hb);
+        var g_pi = new THREE.CylinderGeometry( 2, 2, .1, 8 );
+        var m_pi = new THREE.MeshPhongMaterial( {color: generate_color(msg[6])} );
+        var pi = new THREE.Mesh( g_pi, m_pi );
+        m.add(pi);
         break;
     case TYPE_MINION:
         m = createMesh("minion");
@@ -83,6 +91,10 @@ function entity_created(msg) {
         scene.add(m);
         hb = createHealthbar(0, 0, .4, .8);
         m.add(hb);
+        var g_pi = new THREE.CylinderGeometry( .2, .2, .1, 8 );
+        var m_pi = new THREE.MeshPhongMaterial( {color: generate_color(msg[6])} );
+        var pi = new THREE.Mesh( g_pi, m_pi );
+        m.add(pi);
         break;
     }
 

@@ -34,6 +34,10 @@ function populate() {
 
   // Load tower
   previewTower = createMesh("tower");
+  var g_pi = new THREE.CylinderGeometry( .3, .3, .1, 8 );
+  var m_pi = new THREE.MeshPhongMaterial( {color: generate_color(me)} );
+  var pi = new THREE.Mesh( g_pi, m_pi );
+  previewTower.add(pi);
 }
 
 function updateWorld(delta) {

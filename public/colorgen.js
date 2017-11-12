@@ -1,6 +1,6 @@
 function rgb2hex(red, green, blue) {
     var rgb = blue | (green << 8) | (red << 16);
-    return '#' + (0x1000000 + rgb).toString(16).slice(1)
+    return rgb;
 }
 
 function generate_color(name) {
@@ -23,13 +23,9 @@ function generate_color(name) {
             blue = blue * blue;
         }
     }
-    console.log(red);
-    console.log(green);
-    console.log(blue);
+    
     red = red % 255;
     green = green % 255;
     blue = blue % 255;
     return rgb2hex(red, green, blue);
 }
-
-
