@@ -226,6 +226,10 @@ function request_attack(player_name) {
     socket.emit('request_attack', player_name);
 }
 
+function game_over(name){
+    if (me == name) game_over();
+}
+
 function connect_to_server() {
     me = $('#player_name_text').val();
     $('#name_indicator').text(me);
@@ -241,6 +245,7 @@ function connect_to_server() {
     socket.on('new_player', new_player);
     socket.on('tower_fired', handle_tower_fired);
     socket.on('player_cash_changed', player_cash_changed);
+    socket.on('game_over', game_over);
     socket.on('tick', tick);
     socket.on('clear_world', clear_world);
 }
