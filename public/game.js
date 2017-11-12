@@ -53,16 +53,29 @@ function update(delta) {
   updateWorld(delta);
 }
 
-
+// Drag camera
 var hammertime = new Hammer(renderer.domElement, {});
 hammertime.on('pan', function(ev) {
-    momentum.x -= ev.velocityX*0.5;
-    momentum.z -= ev.velocityY*0.5;
+    momentum.x -= ev.velocityX*0.5*((50-camera.position.y)/40+1);
+    momentum.z -= ev.velocityY*0.5*((50-camera.position.y)/40+1);
 });
+
+// Pinch to zoom
+var last_scale = 0;
 hammertime.get('pinch').set({ enable: true });
 hammertime.on('pinch', function(ev) {
-    momentum.y += ev.scale-1;
+    if (last_scale)
+        momentum.y += 4*(last_scale-ev.scale)*((60-camera.position.y)/20+1);
+    last_scale = ev.scale;
     console.log(ev.scale);
+});
+hammertime.on('pinchend', function(ev) {
+    last_scale = 0;
+});
+
+// Scroll to zoom
+$(renderer.domElement).bind('mousewheel', function(e) {
+    momentum.y -= e.originalEvent.wheelDelta/150;
 });
 
 function raycast_toPlane() {
