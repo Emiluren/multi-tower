@@ -124,8 +124,8 @@ async def update_player(player):
         if enemy_castle is not None:
 
             # TODO: find optimal side to spawn on given target
-            spawn_x = castle.x + 2
-            spawn_y = castle.y
+            spawn_x = castle.x
+            spawn_y = castle.y + 2
 
             minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
             board_add_entity(minion)
@@ -190,7 +190,7 @@ async def slow_timer_tick():
         castle = find_castle_near(minion.position_tuple())
         assert castle is not None
         damage = entities.MINION_DAMAGE * minion.level
-        castle.health -= damage
+        castle.health = max(castle.health - damage, 0)
         # reward the owner a bit
         players[minion.player_name].cash += \
                 entities.CASTLE_DAMAGE_REWARD * damage
