@@ -84,8 +84,18 @@ $(renderer.domElement).click(function () {
                 $("#entity_data").text(JSON.stringify(edat, null, 2));
             }
         }
+        else {
+            deselect();
+        }
     }
 });
+
+function deselect(){
+    selected = false;
+    $("#entity_data").text('')
+    $("#selected_type").text('NONE');
+    $('.sidebar').sidebar('hide');
+}
 
 function draw() {
   renderer.render(scene, camera);

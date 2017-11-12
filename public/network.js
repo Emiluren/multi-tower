@@ -95,6 +95,9 @@ function entity_destroyed(msg) {
     console.log('Entity destroyed: ' + msg)
     let id = JSON.parse(msg);
     let entity = entities[id];
+    if (selected.id == id) deselect();
+
+    scene.remove(entity.mesh);
     delete entities[id];
 
 }
