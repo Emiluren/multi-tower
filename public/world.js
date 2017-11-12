@@ -34,7 +34,6 @@ function populate() {
 
   // Load tower
   previewTower = createMesh("tower");
-
 }
 
 function updateWorld(delta) {

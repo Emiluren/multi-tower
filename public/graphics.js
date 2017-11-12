@@ -45,3 +45,30 @@ function initGraphics() {
 
   THREEx.WindowResize(renderer, camera);
 }
+
+function createHealthbar(x, y, size, elevation) {
+  // Red
+  var hbg1 = new THREE.PlaneGeometry(size, .1);
+  var hbm1 = new THREE.MeshBasicMaterial({color: 0xff0000});
+  var hb1  = new THREE.Mesh(hbg1, hbm1);
+  hb1.position.y -= .001;
+  // Green
+  var hbg2 = new THREE.PlaneGeometry(size, .1);
+  var hbm2 = new THREE.MeshBasicMaterial({color: 0x00ff00});
+  var hb2  = new THREE.Mesh(hbg2, hbm2);
+  hb2.position.z += .001;
+
+  // Group
+  var group = new THREE.Group();
+  group.add(hb1);
+  group.add(hb2);
+  group.hb_size = size;
+  group.position.set(x, elevation, y);
+
+  return group;
+}
+
+function updateHealthbar(hb, perc) {
+  hb.children[1].scale.x = perc / 100.0;
+  hb.children[1].position.x = hb.hb_size * (perc / 100.0 / 2 - .5);
+}
