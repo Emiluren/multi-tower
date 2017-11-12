@@ -1,7 +1,10 @@
 $(document).ready(function(){
-    // Modal
-    $('.ui.modal').modal('setting', 'closable', false);
-    if (!debug) $('.ui.modal').modal('show');
+    // Modals
+    $('#player_login').modal('setting', 'closable', false);
+    $('#player_login').modal('show');
+
+    $('#gameover_modal').modal('setting', 'closable', false);
+    $('#gameover_modal').modal('hide');
 
     // Set focus after 100 ms
     setTimeout(function(){
@@ -11,7 +14,7 @@ $(document).ready(function(){
     tryLogin = function(event) {
         if ($('#player_name_text').val()){
             console.log("Player "+$('#player_name_text').val()+" enters");
-            $('.ui.modal').modal('hide')
+            $('#player_login').modal('hide')
             event.stopPropagation();
             start().then(start2);
         }

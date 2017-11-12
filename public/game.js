@@ -155,3 +155,8 @@ function deselect(){
 function draw() {
   renderer.render(scene, camera);
 }
+
+function gameover(){
+    $('#gameover_modal').modal('show');
+    socket.disconnect();
+}
