@@ -172,6 +172,15 @@ function tick(msg) {
     //console.log('TICK')
 }
 
+function clear_world(msg) {
+    console.log("TODO: remove graphical stuff");
+
+    entities = {};
+    board = {};
+    players = [];
+    cash = 0;
+}
+
 function request_create_tower(tile_x, tile_y) {
     // console.log('x: ' + pointer.clientX + ', y: ' + pointer.clientY);
     // let x = pointer.clientX + game.camera.x;
@@ -204,4 +213,5 @@ function connect_to_server() {
     socket.on('tower_fired', handle_tower_fired);
     socket.on('player_cash_changed', player_cash_changed);
     socket.on('tick', tick);
+    socket.on('clear_world', clear_world);
 }

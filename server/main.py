@@ -194,7 +194,7 @@ async def slow_timer_tick():
         # reward the owner a bit
         players[minion.player_name].cash += \
                 entities.CASTLE_DAMAGE_REWARD * damage
-        await broadcast_message('player_cash_changed', 
+        await broadcast_message('player_cash_changed',
                                 [minion.player_name,
                                 players[minion.player_name].cash])
         entities_changed.append([castle.uid, 'health', castle.health])
@@ -337,6 +337,7 @@ async def index(request):
 
 
 async def send_world_to_player(sid):
+    await broadcast_message('clear_world', "", sid)
     entities_created = []
     for entity in board_entities.values():
         entities_created.append(entity.to_list())
