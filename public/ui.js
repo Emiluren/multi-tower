@@ -45,6 +45,10 @@ $(document).ready(function(){
     $('#create_tower').click(function(){ adding = !adding; addingMode(); $('#create_tower').toggleClass('active');});
     $('#delete_tower').click(function(){  request_delete(selected.id); });
     $('#upgrade_tower').click(function(){ request_upgrade(selected.id); });
+    $('#attack_castle').click(function(){ request_attack(selected.player_name); });
+    if (selected.player_name != me) {
+        $('#attack_castle').hide();
+    }
 
     // Stop building on escape
     $(document).keyup(function(e) {
