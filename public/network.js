@@ -18,11 +18,11 @@ function new_player(json_msg) {
     players.push(msg)
 }
 
-function board_add_entity(id, pos) {
-    if (pos in board) {
-        board[pos].push(id);
+function board_add_entity(id, x, y) {
+    if ((x + "," + y) in board) {
+        board[x + "," + y].push(id);
     } else {
-        board[pos] = [id];
+        board[x + "," + y] = [id];
     }
 }
 
@@ -36,9 +36,9 @@ function board_remove_entity(id) {
     }
 }
 
-function board_move_entity(id, new_pos) {
+function board_move_entity(id, x, y) {
     board_remove_entity(id);
-    board_add_entity(id, new_pos);
+    board_add_entity(id, x, y);
 }
 
 function entity_created(json_msg) {
@@ -65,12 +65,13 @@ function entity_created(json_msg) {
     case TYPE_MINION:
         m = createMesh("minion");
         m.position.set(x, 0, y);
-        //scene.add(m);
+        scene.add(m);
         break;
     }
 
     let entity = {id: id, x: x, y: y, type: type, health: msg[4],
         level: msg[5], player_name: msg[6], mesh: m};
+    m.entity = entity;
     entities[id] = entity;
     board_add_entity(id, x, y);
 }
@@ -94,7 +95,7 @@ function entity_changed(json_msg) {
     } else if (kind == 'position') {
         entities[id].x = data[0];
         entities[id].y = data[1];
-        board_move_entity(id, data);
+        board_move_entity(id, data[0], data[1]);
     } else if (kind == 'level') {
         entities[id].level = data;
     }
