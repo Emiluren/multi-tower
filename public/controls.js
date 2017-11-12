@@ -7,6 +7,7 @@ controls["left"] = ["a", ""];
 controls["right"] = ["d", ""];
 controls["ascend"] = ["z", ""];
 controls["descend"] = ["x", ""];
+controls["to_castle"] = [" ", ""];
 
 var evd = [];
 var evu = [];

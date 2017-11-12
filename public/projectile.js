@@ -35,7 +35,7 @@ function updateProjectiles(delta) {
                 
                 projectilePos.add(dir.multiplyScalar(delta/100));
             }
-            
+
             if (projectiles.indexOf(projectile) == projectiles.length-1) {
                 resolve("All projectiles updated!");
             }

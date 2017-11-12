@@ -62,5 +62,3 @@ class Entity:
 
     def __repr__(self):
         return '{} with health: {}'.format(self.typ, self.health)
-
-

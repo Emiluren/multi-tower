@@ -49,9 +49,13 @@ function player_cash_changed(json_msg){
     $('#indicator_money').text(cash);
 }
 
-function entity_created(json_msg) {
+function handle_entity_created(json_msg) {
     //console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
+    entity_created(msg)
+}
+
+function entity_created(msg) {
 
     let id = msg[0];
     let type = msg[3];
@@ -83,7 +87,11 @@ function entity_created(json_msg) {
     entities[id] = entity;
     board_add_entity(id, x, y);
 
-    if (entity.type == 'castle' && entities[id].player_name == me) setHealthbar(entity.health);
+    if (entity.type == 'castle' && entities[id].player_name == me) {
+        setHealthbar(entity.health);
+        my_castle = entity;
+        goToCastle();
+    }
 }
 
 function handle_tower_fired(json_msg) {
@@ -111,6 +119,7 @@ function entity_destroyed(id) {
     scene.remove(entity.mesh);
 }
 
+
 function handle_entity_changed(json_msg) {
     //console.log('Entity changed: ' + json_msg)
     let msg = JSON.parse(json_msg);
@@ -128,6 +137,10 @@ function entity_changed(msg) {
         board_move_entity(id, data[0], data[1]);
         entities[id].x = data[0];
         entities[id].y = data[1];
+        if (entities[id].type == "minion") {
+          var dir = new THREE.Vector2(Math.sign(data[0] - entities[id].mesh.position.x), Math.sign(data[1] - entities[id].mesh.position.z));
+          movingMinions.push([id, dir]);
+        }
     } else if (kind == 'level') {
         entities[id].level = data;
     }
@@ -147,6 +160,12 @@ function towers_fired(json_msg) {
 function entities_destroyed(json_msg) {
     let entities = JSON.parse(json_msg);
     entities.forEach(entity_destroyed);
+}
+
+function entities_created(json_msg) {
+    console.log('Entites created: ' + json_msg)
+    let entities = JSON.parse(json_msg);
+    entities.forEach(entity_created);
 }
 
 function tick(msg) {
@@ -174,10 +193,11 @@ function connect_to_server() {
     me = $('#player_name_text').val();
     console.log('I am: ' + me);
     socket = io({ query: { name:  me} });
-    socket.on('entity_created', entity_created);
+    socket.on('entity_created', handle_entity_created);
     socket.on('entity_destroyed', handle_entity_destroyed);
     socket.on('entity_changed', handle_entity_changed);
     socket.on('entities_destroyed', entities_destroyed);
+    socket.on('entities_created', entities_created);
     socket.on('entities_changed', entities_changed);
     socket.on('towers_fired', towers_fired);
     socket.on('new_player', new_player);
