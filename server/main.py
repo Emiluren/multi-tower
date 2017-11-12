@@ -149,7 +149,7 @@ def update_minion(minion_id):
 
 def find_castle_near(pos):
     for castle in castles.values():
-        if vec.is_within_bounds(castles.position_tuple(), pos, 7):
+        if vec.is_within_bounds(castle.position_tuple(), pos, 7):
             return castle
     return None
 
@@ -180,7 +180,7 @@ async def slow_timer_tick():
         await broadcast_message('player_cash_changed', 
                                 [minion.player_name,
                                 players[minion.player_name].cash])
-        entities_changed.append([castle.id, 'health', castle.health])
+        entities_changed.append([castle.uid, 'health', castle.health])
         kill_minion_locally(minion_id)
 
     if minions_to_destroy:
