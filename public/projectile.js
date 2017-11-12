@@ -33,7 +33,7 @@ function updateProjectiles(delta) {
                 let dist = targetV3Pos.sub(projectilePos);
                 let dir = dist.normalize();
                 
-                projectilePos.add(dir.multiplyScalar(delta / 100));
+                projectilePos.add(dir.multiplyScalar(delta/100));
             }
             
             if (projectiles.indexOf(projectile) == projectiles.length-1) {
@@ -63,7 +63,9 @@ function deleteCollidedProjectiles(message) {
 function deleteNoTargetProjectiles(targetId) {
     return new Promise(function(resolve, reject) {
         projectiles = projectiles.filter(function(projectile) {
+            scene.remove(projectile.mesh);
             return targetId != projectile.targetId;
         });
+        resolve("All projecctiles without a target removed!");
     });
 }

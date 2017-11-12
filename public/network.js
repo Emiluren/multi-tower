@@ -50,7 +50,7 @@ function player_cash_changed(json_msg){
 }
 
 function entity_created(json_msg) {
-    console.log('Entity created: ' + json_msg)
+    //console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
 
     let id = msg[0];
@@ -104,6 +104,7 @@ function handle_entity_destroyed(msg) {
 }
 
 function entity_destroyed(id) {
+    console.log("Entity destoyed!!");
     let entity = entities[id];
     if (selected.id == id) deselect();
     deleteNoTargetProjectiles(id).then(delete entities[id]);
@@ -111,7 +112,7 @@ function entity_destroyed(id) {
 }
 
 function handle_entity_changed(json_msg) {
-    console.log('Entity changed: ' + json_msg)
+    //console.log('Entity changed: ' + json_msg)
     let msg = JSON.parse(json_msg);
     entity_changed(msg);
 }
@@ -133,7 +134,7 @@ function entity_changed(msg) {
 }
 
 function entities_changed(json_msg) {
-    console.log('Entites changed: ' + json_msg)
+    //console.log('Entites changed: ' + json_msg)
     let entities = JSON.parse(json_msg);
     entities.forEach(entity_changed);
 }
