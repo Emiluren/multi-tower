@@ -50,7 +50,7 @@ function goToCastle() {
     console.log('go to castle: '+my_castle.x+' '+my_castle.y);
     if (my_castle) {
         camera.position.x = my_castle.x + 0;
-        camera.position.y = my_castle.y + 8;
-        camera.position.z = 4;
+        camera.position.z = my_castle.y + 4;
+        camera.position.y = 8;
     }
 }
