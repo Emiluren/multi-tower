@@ -69,8 +69,10 @@ $(renderer.domElement).click(function () {
       addingMode();
     }
     else {
-        console.log('Tried to select: ');
-        console.log(raycast());
+        var intersect = raycast();
+        tile = new THREE.Vector2(Math.round(intersect.point.x), Math.round(intersect.point.z));
+        console.log(intersect);
+        console.log('Tried to select: '+tile.x+', '+tile.y);
     }
 });
 
