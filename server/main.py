@@ -64,14 +64,31 @@ minions = {}
 
 async def fast_timer_tick():
     # board_lock.acquire()
+    towers_fired = []
+    entities_changed = []
+    entities_destroyed = []
     for uid in towers:
         tower, ticks = towers[uid]
         ticks += TICK_TIME * \
                 entities.TOWER_FREQUENCIES[tower.typ] / tower.level
         if ticks >= 1 / TICK_TIME:
-            await fire_tower_if_in_range(tower)
+            tower_fired, entity_changed, entity_destroyed =\
+                    fire_tower_if_in_range(tower)
+            if tower_fired is not None:
+                towers_fired.append(tower_fired)
+                if entity_changed is not None:
+                    entities_changed.append(entity_changed)
+                if entity_destroyed is not None:
+                    entities_destroyed.append(entity_destroyed)
+
             ticks = 0
         towers[uid] = (tower, ticks)
+    if towers_fired:
+        await broadcast_message('towers_fired', towers_fired)
+    if entities_changed:
+        await broadcast_message('entities_changed', entities_changed)
+    if entities_destroyed:
+        await broadcast_message('entities_destroyed', entities_destroyed)
     # board_lock.release()
 
 
@@ -116,12 +133,14 @@ async def update_player(player):
             await broadcast_message('entity_created', minion.to_list())
 
 
-async def update_minion(minion_id):
+def update_minion(minion_id):
     path = minions[minion_id]
     if path:
         new_pos = path.pop(0)
         board_move_entity(minion_id, new_pos)
-        await broadcast_message('entity_changed', [minion_id, 'position', new_pos])
+        return [minion_id, 'position', new_pos]
+        # await broadcast_message('entity_changed', )
+    return None
 
 
 async def slow_timer_tick():
@@ -129,33 +148,44 @@ async def slow_timer_tick():
     await send_tick()
     for player_name in players:
         await update_player(players[player_name])
+    entities_changed = []
     for minion in minions:
-        await update_minion(minion)
+        entity_changed = update_minion(minion)
+        if entity_changed is not None:
+            entities_changed.append(entity_changed)
+    if entities_changed:
+        await broadcast_message('entities_changed', entities_changed)
+
     # board_lock.release()
 
 
-async def fire_tower_if_in_range(tower):
+def fire_tower_if_in_range(tower):
     tower_pos = tower.position_tuple()
     tower_range = entities.TOWER_RANGES[tower.typ] * tower.level
     for minion_id in minions.keys():
         minion_pos = board_entities[minion_id].position_tuple()
         if vec.is_within_bounds(minion_pos, tower_pos, tower_range):
-            await actually_fire_the_damn_tower(minion_id, tower)
-            print('FIRE!')
-            return
+            # print('FIRE!')
+            return actually_fire_the_damn_tower(minion_id, tower)
+    return None, None, None
 
 
-async def actually_fire_the_damn_tower(minion_id, tower):
+def actually_fire_the_damn_tower(minion_id, tower):
     board_entities[minion_id].health -= tower.level * \
             entities.TOWER_DAMAGES[tower.typ]
-    await broadcast_message('tower_fired', [tower.uid, minion_id])
-    await broadcast_message('entity_changed',
-                            [minion_id, 'health',
-                             board_entities[minion_id].health])
-    print(board_entities[minion_id].health)
+
+    tower_fired = [tower.uid, minion_id]
+    entity_destroyed = None
+    entity_changed = None
+
     if board_entities[minion_id].health <= 0:
         kill_minion_locally(minion_id)
-        await broadcast_message('entity_destroyed', minion_id)
+        entity_destroyed = minion_id
+    else:
+        entity_changed = [minion_id, 'health',
+                          board_entities[minion_id].health]
+
+    return tower_fired, entity_changed, entity_destroyed
 
 
 def kill_minion_locally(minion_id):
@@ -227,14 +257,9 @@ def generate_castle_position():
             pos = castle.position_tuple()
             new_pos = vec.add(direction, pos)
             if is_castle_position_free(new_pos):
-                print('FOUND!')
+                # print('FOUND!')
                 return new_pos
-        pdb.set_trace()
         it += 1
-        print('Trying to find...')
-        for c in castles.values():
-            print(c.position_tuple())
-        raise Exception('NOPE!')
 
 
 async def send_tick():
@@ -261,23 +286,25 @@ async def index(request):
 
 
 async def send_world_to_player(sid):
+    entities_created = []
     for entity in board_entities.values():
-        await broadcast_message('entity_created', entity.to_list(), sid)
-        print("sending", entity.to_list())
-    print("sent world to", sid)
+        entities_created.append(entity.to_list())
+    await broadcast_message('entities_created', entities_created, sid)
 
 
 @sio.on('connect')
 async def connect(sid, environ):
     # board_lock.acquire()
     query = urllib.parse.parse_qs(environ['QUERY_STRING'])
-    print("connect ", sid, query)
+    # print("connect ", sid, query)
     name = query['name'][0]
 
     if name not in players:
         players[name] = entities.Player(name, [sid])
         await assign_castle(name)
         await broadcast_message('new_player', name)
+        await broadcast_message('player_cash_changed', 
+                                [name, players[name].cash])
     else:
         players[name].sids.append(sid)
     await send_world_to_player(sid)
@@ -286,7 +313,7 @@ async def connect(sid, environ):
 
 @sio.on('request_tower')
 async def on_request_tower(sid, data):
-    print("Tower requested: ", data)
+    # print("Tower requested: ", data)
 
     x, y, typ = data
     player = find_player(sid)
@@ -305,7 +332,7 @@ async def on_request_tower(sid, data):
 
 @sio.on('request_upgrade')
 async def on_request_upgrade(sid, data):
-    print("Upgrade requested: ", data)
+    # print("Upgrade requested: ", data)
     entity_id = data
     entity = board_entities[entity_id]
     player = find_player(sid)

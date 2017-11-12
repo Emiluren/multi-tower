@@ -49,9 +49,13 @@ function player_cash_changed(json_msg){
     $('#indicator_money').text(cash);
 }
 
-function entity_created(json_msg) {
-    console.log('Entity created: ' + json_msg)
+function handle_entity_created(json_msg) {
+    //console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
+    entity_created(msg)
+}
+
+function entity_created(msg) {
 
     let id = msg[0];
     let type = msg[3];
@@ -82,31 +86,53 @@ function entity_created(json_msg) {
     m.entity = id;
     entities[id] = entity;
     board_add_entity(id, x, y);
+
+    if (entity.type == 'castle' && entities[id].player_name == me) {
+        setHealthbar(entity.health);
+        my_castle = entity;
+        goToCastle();
+    }
 }
 
-function tower_fired(json_msg) {
-    let towerId = JSON.parse(json_msg)[0];
-    let targetId = JSON.parse(json_msg)[1];
+function handle_tower_fired(json_msg) {
+    let msg = JSON.parse(json_msg);
+    tower_fired(msg)
+}
 
+function tower_fired(msg) {
+    let towerId = msg[0];
+    let targetId = msg[1];
     drawProjectile(towerId, targetId);
 }
 
-function entity_destroyed(msg) {
+function handle_entity_destroyed(msg) {
     console.log('Entity destroyed: ' + msg)
     let id = JSON.parse(msg);
-    let entity = entities[id];
-    delete entities[id];
-
+    entity_destroyed(id);
 }
 
-function entity_changed(json_msg) {
-    console.log('Entity changed: ' + json_msg)
+function entity_destroyed(id) {
+    let entity = entities[id];
+    if (selected.id == id) deselect();
+
+    scene.remove(entity.mesh);
+    delete entities[id];
+}
+
+
+function handle_entity_changed(json_msg) {
+    //console.log('Entity changed: ' + json_msg)
     let msg = JSON.parse(json_msg);
+    entity_changed(msg);
+}
+
+function entity_changed(msg) {
     let id = msg[0];
     let kind = msg[1];
     let data = msg[2];
     if (kind == 'health') {
         entities[id].health = data;
+        if (entities[id].type == 'castle' && entities[id].player_name == me) setHealthbar(data);
     } else if (kind == 'position') {
         board_move_entity(id, data[0], data[1]);
         entities[id].x = data[0];
@@ -118,6 +144,28 @@ function entity_changed(json_msg) {
     } else if (kind == 'level') {
         entities[id].level = data;
     }
+}
+
+function entities_changed(json_msg) {
+    //console.log('Entites changed: ' + json_msg)
+    let entities = JSON.parse(json_msg);
+    entities.forEach(entity_changed);
+}
+
+function towers_fired(json_msg) {
+    let towers = JSON.parse(json_msg);
+    towers.forEach(tower_fired);
+}
+
+function entities_destroyed(json_msg) {
+    let entities = JSON.parse(json_msg);
+    entities.forEach(entity_destroyed);
+}
+
+function entities_created(json_msg) {
+    console.log('Entites created: ' + json_msg)
+    let entities = JSON.parse(json_msg);
+    entities.forEach(entity_created);
 }
 
 function tick(msg) {
@@ -133,18 +181,27 @@ function request_create_tower(tile_x, tile_y) {
     socket.emit('request_tower', [tile_x, tile_y, 'tower_arrows']);
 }
 
-function request_delete_tower(entity_id) {
+function request_delete(entity_id) {
     socket.emit('request_delete', entity_id);
 }
 
+function request_upgrade(entity_id) {
+    socket.emit('request_upgrade', entity_id);
+}
+
 function connect_to_server() {
-    console.log($('#player_name_text').val());
-    socket = io({ query: { name:  $('#player_name_text').val()} });
-    socket.on('entity_created', entity_created);
-    socket.on('entity_destroyed', entity_destroyed);
-    socket.on('entity_changed', entity_changed);
+    me = $('#player_name_text').val();
+    console.log('I am: ' + me);
+    socket = io({ query: { name:  me} });
+    socket.on('entity_created', handle_entity_created);
+    socket.on('entity_destroyed', handle_entity_destroyed);
+    socket.on('entity_changed', handle_entity_changed);
+    socket.on('entities_destroyed', entities_destroyed);
+    socket.on('entities_created', entities_created);
+    socket.on('entities_changed', entities_changed);
+    socket.on('towers_fired', towers_fired);
     socket.on('new_player', new_player);
-    socket.on('tower_fired', tower_fired);
+    socket.on('tower_fired', handle_tower_fired);
     socket.on('player_cash_changed', player_cash_changed);
     socket.on('tick', tick);
 }
