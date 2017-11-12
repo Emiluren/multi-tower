@@ -88,7 +88,8 @@ function entity_destroyed(msg) {
     console.log('Entity destroyed: ' + msg)
     let id = JSON.parse(msg);
     let entity = entities[id];
-    delete entities[id];
+    deleteNoTargetProjectiles(id).then(delete entities[id]);
+    
     
 }
 

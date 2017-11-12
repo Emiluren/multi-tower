@@ -1,6 +1,7 @@
-
+// list of all currently spawned projectiles
 var projectiles = [];
 
+// gets position of entity based on given id
 function getEntityPosition(id) {
     let xPos = entities[id].x;
     let zPos = entities[id].y;
@@ -8,6 +9,7 @@ function getEntityPosition(id) {
     return [xPos, zPos];
 }
 
+// draws the projectile to the scene
 function drawProjectile(towerId, targetId) {
     let towerPos = getEntityPosition(towerId);
     let targetPos = getEntityPosition(targetId);
@@ -20,6 +22,7 @@ function drawProjectile(towerId, targetId) {
     scene.add( sphere );
 }
 
+// updates the projectile position
 function updateProjectiles(delta) {
     return new Promise(function(resolve, reject) {
         projectiles.forEach(function(projectile) {
@@ -31,7 +34,8 @@ function updateProjectiles(delta) {
                 let dir = dist.normalize();
                 
                 projectilePos.add(dir.multiplyScalar(delta / 100));
-                
+            }
+            
             if (projectiles.indexOf(projectile) == projectiles.length-1) {
                 resolve("All projectiles updated!");
             }
@@ -39,7 +43,8 @@ function updateProjectiles(delta) {
     });
 }
 
-function deleteProjectiles(message) {
+// deleted a projectile when it hits the target
+function deleteCollidedProjectiles(message) {
     projectiles = projectiles.filter(function(projectile) {
         
         let projectilePos = projectile.mesh.position;
@@ -50,5 +55,15 @@ function deleteProjectiles(message) {
             scene.remove(projectile.mesh);
         }
         return dist.lengthSq() >= 0.05;
+    });
+}
+
+// removes projectiles that have no target
+// after a minion has died
+function deleteTargetedProjectiles(targetId) {
+    return new Promise(function(resolve, reject) {
+        projectiles = projectiles.filter(function(projectile) {
+            return targetId != projectile.targetId;
+        });
     });
 }
