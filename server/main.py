@@ -124,8 +124,8 @@ async def update_player(player):
         if enemy_castle is not None:
 
             # TODO: find optimal side to spawn on given target
-            spawn_x = castle.x + 2
-            spawn_y = castle.y
+            spawn_x = castle.x
+            spawn_y = castle.y + 2
 
             minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
             board_add_entity(minion)
