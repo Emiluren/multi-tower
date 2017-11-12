@@ -87,7 +87,7 @@ function entity_created(json_msg) {
 function tower_fired(json_msg) {
     let towerId = JSON.parse(json_msg)[0];
     let targetId = JSON.parse(json_msg)[1];
-    
+
     drawProjectile(towerId, targetId);
 }
 
@@ -96,7 +96,7 @@ function entity_destroyed(msg) {
     let id = JSON.parse(msg);
     let entity = entities[id];
     delete entities[id];
-    
+
 }
 
 function entity_changed(json_msg) {
