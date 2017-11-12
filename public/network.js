@@ -200,6 +200,7 @@ function request_upgrade(entity_id) {
 
 function connect_to_server() {
     me = $('#player_name_text').val();
+    $('#name_indicator').text(me);
     console.log('I am: ' + me);
     socket = io({ query: { name:  me} });
     socket.on('entity_created', handle_entity_created);

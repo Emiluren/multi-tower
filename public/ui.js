@@ -58,6 +58,6 @@ $(document).ready(function(){
 
 // Healthbar
 function setHealthbar(value){
-    $('#healthbar_container').progress({ percent: value });
+    $('#healthbar_container').progress({ percent: Math.max(value, 0) });
     $('#healthbar_text').text(value+"%");
 }
