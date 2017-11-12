@@ -38,7 +38,11 @@ function populate() {
 function updateWorld(delta) {
   gridStack = (gridStack + delta / 1000.0) % (Math.PI * 2);
   grid.position.y = .1 + (Math.sin(gridStack) + 1) / 16;
-
+  
+  //updates all the current projectiles
+  //console.log("projectiles:",projectiles);
+  updateProjectiles(delta).then(deleteProjectiles);
+  
   if (adding) {
     previewTower.position.set(tile_pos.x, 0, tile_pos.y);
   }
