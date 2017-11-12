@@ -70,9 +70,21 @@ $(renderer.domElement).click(function () {
     }
     else {
         var intersect = raycast();
-        tile = new THREE.Vector2(Math.round(intersect.point.x), Math.round(intersect.point.z));
-        console.log(intersect);
-        console.log('Tried to select: '+tile.x+', '+tile.y);
+        var tile = new THREE.Vector2(Math.round(intersect.point.x), Math.round(intersect.point.z)-1);
+        var uuid = board[tile.x+","+tile.y];
+        var entity;
+        if (uuid) {
+            entity = entities[uuid[0]];
+            $('.sidebar').sidebar('show');
+            if (entity) {
+                console.log(entity);
+                $("#selected_type").text(entity.type);
+                edat = jQuery.extend({}, entity); // <-- Removing mesh data
+                edat.mesh = [];
+                $("#entity_data").text(JSON.stringify(edat, null, 2));
+                console.log(JSON.stringify(edat))
+            }
+        }
     }
 });
 

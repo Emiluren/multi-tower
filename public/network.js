@@ -71,7 +71,7 @@ function entity_created(json_msg) {
 
     let entity = {id: id, x: x, y: y, type: type, health: msg[4],
         level: msg[5], player_name: msg[6], mesh: m};
-    m.entity = entity;
+    m.entity = id;
     entities[id] = entity;
     board_add_entity(id, x, y);
 }
