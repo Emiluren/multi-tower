@@ -40,6 +40,7 @@ class Player:
         self.sids = sids
         self.spawn_timer = SPAWN_INTERVAL
         self.cash = 100
+        self.target = None
 
 
 class Entity:

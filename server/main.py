@@ -111,29 +111,23 @@ def is_obstructed(x, y):
 
 async def update_player(player):
     player.spawn_timer -= 1
-    if player.spawn_timer <= 0:
+    if player.target is not None and player.spawn_timer <= 0:
         player.spawn_timer = entities.SPAWN_INTERVAL
 
         castle = castles[player.name]
-        enemy_castle = None
-        for player_name in players:
-            if player_name != player.name:
-                enemy_castle = castles[player_name]
-                break
+        enemy_castle = castles[players[player.target]]
 
-        if enemy_castle is not None:
+        # TODO: find optimal side to spawn on given target
+        spawn_x = castle.x
+        spawn_y = castle.y + 2
 
-            # TODO: find optimal side to spawn on given target
-            spawn_x = castle.x
-            spawn_y = castle.y + 2
+        minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
+        board_add_entity(minion)
+        path = pathfinding.find_path(
+            (spawn_x, spawn_y), (enemy_castle.x, enemy_castle.y), is_obstructed)
+        minions[minion.uid] = path[1:]
 
-            minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
-            board_add_entity(minion)
-            path = pathfinding.find_path(
-                (spawn_x, spawn_y), (enemy_castle.x, enemy_castle.y), is_obstructed)
-            minions[minion.uid] = path[1:]
-
-            await broadcast_message('entity_created', minion.to_list())
+        await broadcast_message('entity_created', minion.to_list())
 
 
 def recalculate_minion_paths():
@@ -415,6 +409,12 @@ async def on_request_delete(sid, data):
         del minions[entity_id]
     del board_entities[entity_id]
     await broadcast_message('entity_destroyed', entity_id)
+
+
+@sio.on('request_attack')
+async def on_request_attack(sid, target_name):
+    attacker = find_player(sid)
+    attacker.target = target_name
 
 
 @sio.on('disconnect')
