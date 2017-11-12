@@ -2,6 +2,8 @@
 from aiohttp import web
 import vec
 import entities
+import pathfinding
+
 import socketio
 import asyncio
 import threading
@@ -59,23 +61,6 @@ towers = {}
 # uuid -> (Path)
 minions = {}
 
-async def update_player(player):
-    player.spawn_timer -= 1
-    if player.spawn_timer <= 0:
-        player.spawn_timer = 0
-
-        castle = castles[player.name]
-
-        # TODO: find optimal side to spawn on given target
-        spawn_x = castle.x + 2
-        spawn_y = castle.y
-
-        minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
-        board_add_entity(minion)
-        minions[minion.uid] = []
-
-        await broadcast_message('entity_created', minion.to_list())
-
 
 async def fast_timer_tick():
     board_lock.acquire()
@@ -88,6 +73,49 @@ async def fast_timer_tick():
             ticks = 0
         towers[uid] = (tower, ticks)
     board_lock.release()
+
+
+solid_types = ["tower_arrows"]
+
+
+def is_obstructed(x, y):
+    if (x, y) not in board:
+        return False
+
+    print(board[(x, y)])
+    for eid in board[(x, y)]:
+        print(eid)
+        if board_entities[eid].typ in solid_types:
+            return True
+
+    return False
+
+
+async def update_player(player):
+    player.spawn_timer -= 1
+    if player.spawn_timer <= 0:
+        player.spawn_timer = 0
+
+        castle = castles[player.name]
+        enemy_castle = None
+        for player_name in players:
+            if player_name != player.name:
+                enemy_castle = castles[player_name]
+                break
+
+        if enemy_castle is not None:
+
+            # TODO: find optimal side to spawn on given target
+            spawn_x = castle.x + 2
+            spawn_y = castle.y
+
+            minion = entities.Entity(spawn_x, spawn_y, "minion", player.name)
+            board_add_entity(minion)
+            minions[minion.uid] = pathfinding.find_path(
+                (spawn_x, spawn_y), (enemy_castle.x, enemy_castle.y), is_obstructed)
+            print(minions)
+
+            await broadcast_message('entity_created', minion.to_list())
 
 
 async def slow_timer_tick():
