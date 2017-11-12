@@ -12,6 +12,8 @@ var board = {};
 
 var players = [];
 
+var cash = 0;
+
 function new_player(json_msg) {
     let msg = JSON.parse(json_msg);
     console.log('New player: ' + msg)
@@ -40,6 +42,11 @@ function board_remove_entity(id) {
 function board_move_entity(id, x, y) {
     board_remove_entity(id);
     board_add_entity(id, x, y);
+}
+
+function player_cash_changed(json_msg){
+    cash = JSON.parse(json_msg)[1];
+    $('#indicator_money').text(cash);
 }
 
 function entity_created(json_msg) {
@@ -134,5 +141,6 @@ function connect_to_server() {
     socket.on('entity_changed', entity_changed);
     socket.on('new_player', new_player);
     socket.on('tower_fired', tower_fired);
+    socket.on('player_cash_changed', player_cash_changed);
     socket.on('tick', tick);
 }

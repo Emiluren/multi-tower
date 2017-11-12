@@ -41,7 +41,7 @@ function updateWorld(delta) {
   
   //updates all the current projectiles
   //console.log("projectiles:",projectiles);
-  updateProjectiles(delta).then(deleteProjectiles);
+  //updateProjectiles(delta).then(deleteProjectiles);
   
   if (adding) {
     previewTower.position.set(tile_pos.x, 0, tile_pos.y);
