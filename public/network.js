@@ -76,7 +76,6 @@ function entity_created(msg) {
     case TYPE_CASTLE:
         m = createMesh("castle");
         m.position.set(x, 0, y);
-        m.rotation.y = Math.PI / 2;
         scene.add(m);
         hb = createHealthbar(0, 0, 1, 3);
         m.add(hb);
