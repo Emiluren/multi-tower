@@ -50,7 +50,7 @@ function player_cash_changed(json_msg){
 }
 
 function handle_entity_created(json_msg) {
-    console.log('Entity created: ' + json_msg)
+    //console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
     entity_created(msg)
 }
@@ -121,7 +121,7 @@ function entity_destroyed(id) {
 
 
 function handle_entity_changed(json_msg) {
-    console.log('Entity changed: ' + json_msg)
+    //console.log('Entity changed: ' + json_msg)
     let msg = JSON.parse(json_msg);
     entity_changed(msg);
 }
@@ -137,13 +137,17 @@ function entity_changed(msg) {
         board_move_entity(id, data[0], data[1]);
         entities[id].x = data[0];
         entities[id].y = data[1];
+        if (entities[id].type == "minion") {
+          var dir = new THREE.Vector2(Math.sign(data[0] - entities[id].mesh.position.x), Math.sign(data[1] - entities[id].mesh.position.z));
+          movingMinions.push([id, dir]);
+        }
     } else if (kind == 'level') {
         entities[id].level = data;
     }
 }
 
 function entities_changed(json_msg) {
-    console.log('Entites changed: ' + json_msg)
+    //console.log('Entites changed: ' + json_msg)
     let entities = JSON.parse(json_msg);
     entities.forEach(entity_changed);
 }
