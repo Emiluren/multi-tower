@@ -63,7 +63,7 @@ minions = {}
 
 
 async def fast_timer_tick():
-    board_lock.acquire()
+    # board_lock.acquire()
     for uid in towers:
         tower, ticks = towers[uid]
         ticks += TICK_TIME * \
@@ -72,7 +72,7 @@ async def fast_timer_tick():
             await fire_tower_if_in_range(tower)
             ticks = 0
         towers[uid] = (tower, ticks)
-    board_lock.release()
+    # board_lock.release()
 
 
 solid_types = ["tower_arrows"]
@@ -125,13 +125,13 @@ async def update_minion(minion_id):
 
 
 async def slow_timer_tick():
-    board_lock.acquire()
+    # board_lock.acquire()
     await send_tick()
     for player_name in players:
         await update_player(players[player_name])
     for minion in minions:
         await update_minion(minion)
-    board_lock.release()
+    # board_lock.release()
 
 
 async def fire_tower_if_in_range(tower):
@@ -227,9 +227,14 @@ def generate_castle_position():
             pos = castle.position_tuple()
             new_pos = vec.add(direction, pos)
             if is_castle_position_free(new_pos):
+                print('FOUND!')
                 return new_pos
+        pdb.set_trace()
         it += 1
-        # print(castles)
+        print('Trying to find...')
+        for c in castles.values():
+            print(c.position_tuple())
+        raise Exception('NOPE!')
 
 
 async def send_tick():
@@ -264,7 +269,7 @@ async def send_world_to_player(sid):
 
 @sio.on('connect')
 async def connect(sid, environ):
-    board_lock.acquire()
+    # board_lock.acquire()
     query = urllib.parse.parse_qs(environ['QUERY_STRING'])
     print("connect ", sid, query)
     name = query['name'][0]
@@ -276,7 +281,7 @@ async def connect(sid, environ):
     else:
         players[name].sids.append(sid)
     await send_world_to_player(sid)
-    board_lock.release()
+    # board_lock.release()
 
 
 @sio.on('request_tower')
@@ -325,10 +330,10 @@ async def on_request_delete(sid, data):
 
 @sio.on('disconnect')
 def disconnect(sid):
-    board_lock.acquire()
+    # board_lock.acquire()
     player = find_player(sid)
     player.sids.remove(sid)
-    board_lock.release()
+    # board_lock.release()
     print('disconnect ', sid)
 
 
