@@ -6,6 +6,8 @@ SPAWN_INTERVAL = 10
 
 CASTLE_DAMAGE_REWARD = 1
 
+MINION_KILL_REWARD = 5
+
 MINION_DAMAGE = 5
 
 # Controls how fast each type of tower fires

@@ -100,7 +100,7 @@ function entity_created(msg) {
     if (entity.type == 'castle' && entities[id].player_name == me) {
         setHealthbar(entity.health);
         my_castle = entity;
-        // goToCastle();
+        goToCastle();
     }
 }
 
