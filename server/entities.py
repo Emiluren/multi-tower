@@ -4,6 +4,8 @@ import uuid
 MAX_HEALTH = 100
 SPAWN_INTERVAL = 10
 
+MINION_DAMAGE = 5
+
 # Controls how fast each type of tower fires
 
 TOWER_FREQUENCIES = {
