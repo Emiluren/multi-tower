@@ -46,6 +46,10 @@ function initGraphics() {
   THREEx.WindowResize(renderer, camera);
 }
 
-function showPreview(type){
-
+function goToCastle() {
+    if (my_castle) {
+        camera.position.x = my_castle.x + 0;
+        camera.position.y = my_castle.y + 8;
+        camera.position.z = 4;
+    }
 }

@@ -83,7 +83,11 @@ function entity_created(json_msg) {
     entities[id] = entity;
     board_add_entity(id, x, y);
 
-    if (entity.type == 'castle' && entities[id].player_name == me) setHealthbar(entity.health);
+    if (entity.type == 'castle' && entities[id].player_name == me) {
+        setHealthbar(entity.health);
+        my_castle = entity;
+        goToCastle();
+    }
 }
 
 function tower_fired(json_msg) {
