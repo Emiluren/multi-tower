@@ -45,12 +45,3 @@ function initGraphics() {
 
   THREEx.WindowResize(renderer, camera);
 }
-
-function goToCastle() {
-    console.log('go to castle: '+my_castle.x+' '+my_castle.y);
-    if (my_castle) {
-        camera.position.x = my_castle.x + 0;
-        camera.position.z = my_castle.y + 4;
-        camera.position.y = 8;
-    }
-}
