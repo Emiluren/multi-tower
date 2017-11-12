@@ -116,7 +116,7 @@ async def update_player(player):
         player.spawn_timer = entities.SPAWN_INTERVAL
 
         castle = castles[player.name]
-        enemy_castle = castles[players[player.target]]
+        enemy_castle = castles[player.target]
 
         # TODO: find optimal side to spawn on given target
         spawn_x = castle.x
