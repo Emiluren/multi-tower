@@ -424,8 +424,11 @@ async def on_request_delete(sid, data):
 
 @sio.on('request_attack')
 async def on_request_attack(sid, target_name):
-    attacker = find_player(sid)
-    attacker.target = target_name
+    if players[sid].name == target_name:
+        print(target_name, "tried to attack themself")
+    else:
+        attacker = find_player(sid)
+        attacker.target = target_name
 
 
 @sio.on('disconnect')
