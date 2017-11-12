@@ -105,8 +105,10 @@ function entity_destroyed(msg) {
 }
 
 function entity_changed(json_msg) {
-    console.log('Entity changed: ' + json_msg)
     let msg = JSON.parse(json_msg);
+
+    if (! msg[1] in ['position']) console.log('Entity changed: ' + json_msg)
+
     let id = msg[0];
     let kind = msg[1];
     let data = msg[2];
