@@ -61,7 +61,7 @@ hammertime.on('pan', function(ev) {
 });
 hammertime.get('pinch').set({ enable: true });
 hammertime.on('pinch', function(ev) {
-    console.log(ev);
+    momentum.y += ev.scale;
 });
 
 function raycast_toPlane() {
