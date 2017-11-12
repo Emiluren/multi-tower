@@ -60,7 +60,7 @@ function deleteCollidedProjectiles(message) {
 
 // removes projectiles that have no target
 // after a minion has died
-function deleteTargetedProjectiles(targetId) {
+function deleteNoTargetProjectiles(targetId) {
     return new Promise(function(resolve, reject) {
         projectiles = projectiles.filter(function(projectile) {
             return targetId != projectile.targetId;

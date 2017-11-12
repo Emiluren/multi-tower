@@ -1,4 +1,6 @@
+var me = "";
 var adding = false;
+var selected = false;
 
 var raycaster = new THREE.Raycaster();
 var mouse_pos = new THREE.Vector2();
@@ -77,13 +79,24 @@ $(renderer.domElement).click(function () {
             $('.sidebar').sidebar('show');
             if (entity) {
                 $("#selected_type").text(entity.type);
+                selected = entity;
                 edat = jQuery.extend({}, entity); // <-- Removing mesh data
                 edat.mesh = [];
                 $("#entity_data").text(JSON.stringify(edat, null, 2));
             }
         }
+        else {
+            deselect();
+        }
     }
 });
+
+function deselect(){
+    selected = false;
+    $("#entity_data").text('')
+    $("#selected_type").text('NONE');
+    $('.sidebar').sidebar('hide');
+}
 
 function draw() {
   renderer.render(scene, camera);
