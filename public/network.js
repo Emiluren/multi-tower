@@ -77,12 +77,19 @@ function entity_created(json_msg) {
     board_add_entity(id, x, y);
 }
 
+function tower_fired(json_msg) {
+    let towerId = JSON.parse(json_msg)[0];
+    let targetId = JSON.parse(json_msg)[1];
+    
+    drawProjectile(towerId, targetId);
+}
+
 function entity_destroyed(msg) {
     console.log('Entity destroyed: ' + msg)
     let id = JSON.parse(msg);
     let entity = entities[id];
-
     delete entities[id];
+    
 }
 
 function entity_changed(json_msg) {
@@ -115,6 +122,10 @@ function request_create_tower(tile_x, tile_y) {
     socket.emit('request_tower', [tile_x, tile_y, 'tower_arrows']);
 }
 
+function request_delete_tower(entity_id) {
+    socket.emit('request_delete', entity_id);
+}
+
 function connect_to_server() {
     console.log($('#player_name_text').val());
     socket = io({ query: { name:  $('#player_name_text').val()} });
@@ -122,5 +133,6 @@ function connect_to_server() {
     socket.on('entity_destroyed', entity_destroyed);
     socket.on('entity_changed', entity_changed);
     socket.on('new_player', new_player);
+    socket.on('tower_fired', tower_fired);
     socket.on('tick', tick);
 }
