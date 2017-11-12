@@ -120,10 +120,8 @@ async def actually_fire_the_damn_tower(minion_id, tower):
 
 def kill_minion_locally(minion_id):
     print(board)
-    if board_try_remove_entity(minion_id):
-        del minions[minion_id]
-    else:
-        print('Wtf ')
+    board_try_remove_entity(minion_id)
+    del minions[minion_id]
 
 
 def is_castle_position_free(pos):
@@ -275,7 +273,14 @@ async def on_request_upgrade(sid, data):
 
 @sio.on('request_delete')
 async def on_request_delete(sid, data):
-    pass
+    entity_id = data
+    entity = board_entities[entity_id]
+    if entity.is_tower():
+        del towers[entity_id]
+    elif entity.is_minion():
+        del minions[entity_id]
+    del board_entities[entity_id]
+    await broadcast_message('entity_destroyed', entity_id)
 
 
 @sio.on('disconnect')

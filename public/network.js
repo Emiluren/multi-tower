@@ -22,7 +22,7 @@ function board_add_entity(id, pos) {
     if (pos in board) {
         board[pos].push(id);
     } else {
-        board[pos] = [pos];
+        board[pos] = [id];
     }
 }
 
