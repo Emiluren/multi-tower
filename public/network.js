@@ -122,6 +122,10 @@ function request_create_tower(tile_x, tile_y) {
     socket.emit('request_tower', [tile_x, tile_y, 'tower_arrows']);
 }
 
+function request_delete_tower(entity_id) {
+    socket.emit('request_delete', entity_id);
+}
+
 function connect_to_server() {
     console.log($('#player_name_text').val());
     socket = io({ query: { name:  $('#player_name_text').val()} });
