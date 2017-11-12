@@ -82,6 +82,8 @@ function entity_created(json_msg) {
     m.entity = id;
     entities[id] = entity;
     board_add_entity(id, x, y);
+
+    if (entity.type == 'castle' && entities[id].player_name == me) setHealthbar(entity.health);
 }
 
 function tower_fired(json_msg) {
@@ -110,6 +112,7 @@ function entity_changed(json_msg) {
     let data = msg[2];
     if (kind == 'health') {
         entities[id].health = data;
+        if (entities[id].type == 'castle' && entities[id].player_name == me) setHealthbar(data);
     } else if (kind == 'position') {
         board_move_entity(id, data[0], data[1]);
         entities[id].x = data[0];
@@ -141,8 +144,9 @@ function request_upgrade(entity_id) {
 }
 
 function connect_to_server() {
-    console.log($('#player_name_text').val());
-    socket = io({ query: { name:  $('#player_name_text').val()} });
+    me = $('#player_name_text').val();
+    console.log('I am: ' + me);
+    socket = io({ query: { name:  me} });
     socket.on('entity_created', entity_created);
     socket.on('entity_destroyed', entity_destroyed);
     socket.on('entity_changed', entity_changed);

@@ -1,3 +1,4 @@
+var me = "";
 var adding = false;
 var selected = false;
 

@@ -41,13 +41,6 @@ $(document).ready(function(){
         $("#sidebar_toggle").css("left", ($(".sidebar").position().left+$(".sidebar").width()+40+"px"));
     }, 10);
 
-    // Healthbar
-    function setHealth(value){
-        $('#healthbar_container').progress({ percent: value });
-        $('#healthbar_text').text(value+"%");
-    }
-    setHealth(30);
-
     // Add button - events
     $('#create_tower').click(function(){ adding = !adding; addingMode(); $('#create_tower').toggleClass('active');});
     $('#delete_tower').click(function(){  request_delete(selected.id); });
@@ -62,3 +55,9 @@ $(document).ready(function(){
 
 
 });
+
+// Healthbar
+function setHealthbar(value){
+    $('#healthbar_container').progress({ percent: value });
+    $('#healthbar_text').text(value+"%");
+}
