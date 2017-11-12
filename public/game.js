@@ -78,11 +78,14 @@ $(renderer.domElement).click(function () {
             entity = entities[uuid[0]];
             $('.sidebar').sidebar('show');
             if (entity) {
-                $("#selected_type").text(entity.type);
                 selected = entity;
                 edat = jQuery.extend({}, entity); // <-- Removing mesh data
                 edat.mesh = [];
                 $("#entity_data").text(JSON.stringify(edat, null, 2));
+
+                $("#selected_type").text(entity.type);
+                if (entity.player_name == me) { $("#selected_type").addClass('green'); $("#selected_type").removeClass('red'); }
+                else { $("#selected_type").addClass('red'); $("#selected_type").removeClass('green'); }
             }
         }
         else {
