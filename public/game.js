@@ -37,16 +37,22 @@ function update(delta) {
   camera.position.y += momentum.y*speed
   camera.position.z += momentum.z*speed
 
-  if(adding)
-    raycast();
+  if (adding)
+    raycast_toPlane();
 
   updateWorld(delta);
 }
 
-function raycast() {
+function raycast_toPlane() {
   raycaster.setFromCamera( mouse_pos, camera );
   var intersects = raycaster.intersectObject( plane );
   tile_pos = new THREE.Vector2(Math.round(intersects[0].point.x), Math.round(intersects[0].point.z));
+}
+
+function raycast() {
+    raycaster.setFromCamera( mouse_pos, camera );
+    var intersects = raycaster.intersectObjects ( scene.children );
+    return intersects[0];
 }
 
 // Getting mouse position
@@ -59,8 +65,23 @@ $(document).mousemove(function(event) {
 $(renderer.domElement).click(function () {
     if (adding) {
       request_create_tower(tile_pos.x, tile_pos.y);
-      adding = false;
       addingMode();
+    }
+    else {
+        var intersect = raycast();
+        var tile = new THREE.Vector2(Math.round(intersect.point.x), Math.round(intersect.point.z)-1);
+        var uuid = board[tile.x+","+tile.y];
+        var entity;
+        if (uuid) {
+            entity = entities[uuid[0]];
+            $('.sidebar').sidebar('show');
+            if (entity) {
+                $("#selected_type").text(entity.type);
+                edat = jQuery.extend({}, entity); // <-- Removing mesh data
+                edat.mesh = [];
+                $("#entity_data").text(JSON.stringify(edat, null, 2));
+            }
+        }
     }
 });
 

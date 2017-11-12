@@ -54,7 +54,7 @@
     <!-- Create menu -->
     <div class="ui container dark_overlay" id="create_menu">
         <i class="plus icon"></i>
-        <button class="circular ui icon button" id="create_tower">
+        <button class="circular ui icon toggle button" id="create_tower">
             <i class="icon building"></i>
         </button>
     </div>
@@ -63,6 +63,7 @@
     <button class="ui black left toggle button red" id="sidebar_toggle"> << </button>
     <div class="ui dark_overlay wide sidebar left vertical">
         <h3 class="ui header inverted">Selected: <span id="selected_type" class="ui label green">Owned tower</h3>
+        <div id="entity_data" style="width:200px"></div>
         <button class="ui primary basic button"> Delete tower  </button>
         <button class="ui primary basic button"> Upgrade tower </button>
 

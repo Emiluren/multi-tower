@@ -61,15 +61,12 @@ def add_pos_to_discovered(pos, discovered, discovered_set, dist_map):
 
 def reconstruct_path(start, came_from, dest):
     result = []
-    curr = dest 
+    curr = dest
     while curr != start:
-        print(came_from)
-        print(curr)
         tmp = came_from[curr]
         result.append(tmp)
         del came_from[curr]
         curr = tmp
-    result.append(start)
     return list(reversed(result))
 
 

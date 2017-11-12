@@ -46,6 +46,9 @@ class Entity:
     def is_tower(self):
         return self.typ in TOWER_FREQUENCIES
 
+    def is_minion(self):
+        return self.typ == 'minion'
+
     def to_list(self):
         return [self.uid, self.x, self.y,
                 self.typ, self.health, self.level, self.player_name]

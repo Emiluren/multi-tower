@@ -18,11 +18,11 @@ function new_player(json_msg) {
     players.push(msg)
 }
 
-function board_add_entity(id, pos) {
-    if (pos in board) {
-        board[pos].push(id);
+function board_add_entity(id, x, y) {
+    if ((x + "," + y) in board) {
+        board[x + "," + y].push(id);
     } else {
-        board[pos] = [pos];
+        board[x + "," + y] = [id];
     }
 }
 
@@ -30,19 +30,20 @@ function board_remove_entity(id) {
     let entity = entities[id];
     let pos = [entity.x, entity.y];
 
-    board[pos].remove(id);
+    let index = board[pos].indexOf(id)
+    board[pos].splice(index, 1);
     if (board[pos].length == 0) {
         delete board[pos];
     }
 }
 
-function board_move_entity(id, new_pos) {
+function board_move_entity(id, x, y) {
     board_remove_entity(id);
-    board_add_entity(id, new_pos);
+    board_add_entity(id, x, y);
 }
 
 function entity_created(json_msg) {
-    //console.log('Entity created: ' + json_msg)
+    console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
 
     let id = msg[0];
@@ -71,6 +72,7 @@ function entity_created(json_msg) {
 
     let entity = {id: id, x: x, y: y, type: type, health: msg[4],
         level: msg[5], player_name: msg[6], mesh: m};
+    m.entity = id;
     entities[id] = entity;
     board_add_entity(id, x, y);
 }
@@ -99,9 +101,9 @@ function entity_changed(json_msg) {
     if (kind == 'health') {
         entities[id].health = data;
     } else if (kind == 'position') {
+        board_move_entity(id, data[0], data[1]);
         entities[id].x = data[0];
         entities[id].y = data[1];
-        board_move_entity(id, data);
     } else if (kind == 'level') {
         entities[id].level = data;
     }
@@ -125,7 +127,7 @@ function connect_to_server() {
     socket = io({ query: { name:  $('#player_name_text').val()} });
     socket.on('entity_created', entity_created);
     socket.on('entity_destroyed', entity_destroyed);
-    socket.on('entity_changed', entity_created);
+    socket.on('entity_changed', entity_changed);
     socket.on('new_player', new_player);
     socket.on('tower_fired', tower_fired);
     socket.on('tick', tick);
