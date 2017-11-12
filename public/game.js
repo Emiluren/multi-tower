@@ -65,6 +65,16 @@ function raycast() {
     return intersects[0];
 }
 
+function goToCastle() {
+    console.log('go to castle: '+my_castle.x+' '+my_castle.y);
+    if (my_castle) {
+        camera.position.x = my_castle.x + 0;
+        camera.position.z = my_castle.y + 4;
+        camera.position.y = 8;
+        momentum.set(0,0,0);
+    }
+}
+
 // Getting mouse position
 $(document).mousemove(function(event) {
     mouse_pos.x =  ( event.clientX / window.innerWidth ) * 2 - 1;
