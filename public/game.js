@@ -126,7 +126,7 @@ $(renderer.domElement).click(function () {
                     edat = jQuery.extend({}, entity); // <-- Removing mesh data
                     edat.mesh = [];
                     $("#entity_data").text(JSON.stringify(edat, null, 2));
-
+                    $("#selected_name").text(entity.player_name+"'s");
                     $("#selected_type").text(entity.type);
                     if (entity.player_name == me) {
                         $("#selected_type").addClass('green');
