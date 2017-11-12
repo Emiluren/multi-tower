@@ -56,3 +56,7 @@ body {
     border-radius: 5px;
     width: auto !important;
 }
+
+#attack_castle {
+    margin-top: 5px;
+}
