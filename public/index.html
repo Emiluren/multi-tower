@@ -50,10 +50,13 @@
     <div class="ui small inverted green progress dark_overlay" id="healthbar_container" data-value="30" data-total="100">
         <div class="bar"></div>
         <div class="label">Castle health: <span id="healthbar_text">30%</span></div>
-    </div>
 
-    <!-- Cash indicator -->
-    <div class="dark_overlay" id="cash_container"> Cash: <span class="ui big label dark_overlay" id ="indicator_money">60</span> </div>
+        <a class="ui yellow label" style="width:auto;  transform: translate(0px,20px);" style="font-size: inherit; display: inline; color: inherit;" id="indicator_money"></a>
+   </div>
+
+    <!-- Name indicator -->
+      <span id="name_indicator" class="ui label" id ="name_indicator"></span>
+
 
     <!-- Create menu -->
     <div class="ui container dark_overlay" id="create_menu">
@@ -70,6 +73,7 @@
         <div id="entity_data" style="width:200px"></div>
         <button class="ui primary basic button" id="delete_tower"> Delete tower  </button>
         <button class="ui primary basic button" id="upgrade_tower"> Upgrade tower </button>
+        <button class="ui primary basic button" id="attack_castle"> Attack Castle </button>
 
     </div>
 

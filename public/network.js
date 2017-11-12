@@ -197,6 +197,15 @@ function tick(msg) {
     //console.log('TICK')
 }
 
+function clear_world(msg) {
+    console.log("TODO: remove graphical stuff");
+
+    entities = {};
+    board = {};
+    players = [];
+    cash = 0;
+}
+
 function request_create_tower(tile_x, tile_y) {
     // console.log('x: ' + pointer.clientX + ', y: ' + pointer.clientY);
     // let x = pointer.clientX + game.camera.x;
@@ -214,8 +223,13 @@ function request_upgrade(entity_id) {
     socket.emit('request_upgrade', entity_id);
 }
 
+function request_attack(player_name) {
+    socket.emit('request_attack', player_name);
+}
+
 function connect_to_server() {
     me = $('#player_name_text').val();
+    $('#name_indicator').text(me);
     console.log('I am: ' + me);
     socket = io({ query: { name:  me} });
     socket.on('entity_created', handle_entity_created);
@@ -229,4 +243,5 @@ function connect_to_server() {
     socket.on('tower_fired', handle_tower_fired);
     socket.on('player_cash_changed', player_cash_changed);
     socket.on('tick', tick);
+    socket.on('clear_world', clear_world);
 }

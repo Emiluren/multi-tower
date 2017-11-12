@@ -29,6 +29,7 @@ body {
 #healthbar_container {
     background: #630000;
     position:absolute;
+    text-align: center;
 
     margin:10px;
     left: 50%;
@@ -36,9 +37,11 @@ body {
     width:20%;
 }
 
-#cash_container {
-    margin:10px;
-    right:20px;
+#name_indicator {
+    position: absolute;
+    right:10px;
+    width: 50px;
+    z-index: 15;
 }
 
 #create_menu {
