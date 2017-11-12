@@ -1,4 +1,5 @@
 var me = "";
+var my_castle;
 var adding = false;
 var selected = false;
 
@@ -31,9 +32,16 @@ function update(delta) {
   if (down("descend"))
       acceleration.y -= speed*acceleration_rate;
 
-  momentum = momentum.add(acceleration).multiplyScalar(Math.pow(deacceleration_rate , speed));
-  if (35 < camera.position.y && 0 < momentum.y) momentum.y *= (40 - camera.position.y)/5;
-  if (camera.position.y < 6 && momentum.y < 0)  momentum.y *= (camera.position.y - 2 )/5;
+
+  if (down('to_castle') && my_castle) {
+      goToCastle();
+  }
+  else {
+      acceleration.multiplyScalar(1 + 0.5 * (camera.position.y / 60));
+      momentum = momentum.add(acceleration).multiplyScalar(Math.pow(deacceleration_rate, speed));
+      if (60 < camera.position.y && 0 < momentum.y) momentum.y *= (65 - camera.position.y) / 5;
+      if (camera.position.y < 6 && momentum.y < 0) momentum.y *= (camera.position.y - 2 ) / 5;
+  }
 
   camera.position.x += momentum.x*speed
   camera.position.y += momentum.y*speed
@@ -71,22 +79,33 @@ $(renderer.domElement).click(function () {
     }
     else {
         var intersect = raycast();
-        var tile = new THREE.Vector2(Math.round(intersect.point.x), Math.round(intersect.point.z)-1);
-        var uuid = board[tile.x+","+tile.y];
-        var entity;
-        if (uuid) {
-            entity = entities[uuid[0]];
-            $('.sidebar').sidebar('show');
-            if (entity) {
-                $("#selected_type").text(entity.type);
-                selected = entity;
-                edat = jQuery.extend({}, entity); // <-- Removing mesh data
-                edat.mesh = [];
-                $("#entity_data").text(JSON.stringify(edat, null, 2));
+        if (intersect) {
+            var tile = new THREE.Vector2(Math.round(intersect.point.x), Math.round(intersect.point.z) - 1);
+            var uuid = board[tile.x + "," + tile.y];
+            var entity;
+            if (uuid) {
+                entity = entities[uuid[0]];
+                $('.sidebar').sidebar('show');
+                if (entity) {
+                    selected = entity;
+                    edat = jQuery.extend({}, entity); // <-- Removing mesh data
+                    edat.mesh = [];
+                    $("#entity_data").text(JSON.stringify(edat, null, 2));
+
+                    $("#selected_type").text(entity.type);
+                    if (entity.player_name == me) {
+                        $("#selected_type").addClass('green');
+                        $("#selected_type").removeClass('red');
+                    }
+                    else {
+                        $("#selected_type").addClass('red');
+                        $("#selected_type").removeClass('green');
+                    }
+                }
             }
-        }
-        else {
-            deselect();
+            else {
+                deselect();
+            }
         }
     }
 });

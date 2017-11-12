@@ -87,7 +87,11 @@ function entity_created(msg) {
     entities[id] = entity;
     board_add_entity(id, x, y);
 
-    if (entity.type == 'castle' && entities[id].player_name == me) setHealthbar(entity.health);
+    if (entity.type == 'castle' && entities[id].player_name == me) {
+        setHealthbar(entity.health);
+        my_castle = entity;
+        goToCastle();
+    }
 }
 
 function handle_tower_fired(json_msg) {
@@ -114,6 +118,7 @@ function entity_destroyed(id) {
     scene.remove(entity.mesh);
     delete entities[id];
 }
+
 
 function handle_entity_changed(json_msg) {
     console.log('Entity changed: ' + json_msg)
