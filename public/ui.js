@@ -44,7 +44,7 @@ $(document).ready(function(){
     setHealth(30);
 
     // Add button - events
-    $('#create_tower').click(function(){ adding = !adding; addingMode(); });
+    $('#create_tower').click(function(){ adding = !adding; addingMode(); $('#create_tower').toggleClass('active');});
 
 
 });
