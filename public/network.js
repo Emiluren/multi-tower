@@ -30,7 +30,8 @@ function board_remove_entity(id) {
     let entity = entities[id];
     let pos = [entity.x, entity.y];
 
-    board[pos].remove(id);
+    let index = board[pos].indexOf(id)
+    board[pos].splice(index, 1);
     if (board[pos].length == 0) {
         delete board[pos];
     }
@@ -42,7 +43,7 @@ function board_move_entity(id, x, y) {
 }
 
 function entity_created(json_msg) {
-    //console.log('Entity created: ' + json_msg)
+    console.log('Entity created: ' + json_msg)
     let msg = JSON.parse(json_msg);
 
     let id = msg[0];
@@ -93,9 +94,9 @@ function entity_changed(json_msg) {
     if (kind == 'health') {
         entities[id].health = data;
     } else if (kind == 'position') {
+        board_move_entity(id, data[0], data[1]);
         entities[id].x = data[0];
         entities[id].y = data[1];
-        board_move_entity(id, data[0], data[1]);
     } else if (kind == 'level') {
         entities[id].level = data;
     }
