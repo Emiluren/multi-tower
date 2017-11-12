@@ -64,14 +64,31 @@ minions = {}
 
 async def fast_timer_tick():
     # board_lock.acquire()
+    towers_fired = []
+    entities_changed = []
+    entities_destroyed = []
     for uid in towers:
         tower, ticks = towers[uid]
         ticks += TICK_TIME * \
                 entities.TOWER_FREQUENCIES[tower.typ] / tower.level
         if ticks >= 1 / TICK_TIME:
-            await fire_tower_if_in_range(tower)
+            tower_fired, entity_changed, entity_destroyed =\
+                    fire_tower_if_in_range(tower)
+            if tower_fired is not None:
+                towers_fired.append(tower_fired)
+                if entity_changed is not None:
+                    entities_changed.append(entity_changed)
+                if entity_destroyed is not None:
+                    entities_destroyed.append(entity_destroyed)
+
             ticks = 0
         towers[uid] = (tower, ticks)
+    if towers_fired:
+        await broadcast_message('towers_fired', towers_fired)
+    if entities_changed:
+        await broadcast_message('entities_changed', entities_changed)
+    if entities_destroyed:
+        await broadcast_message('entities_destroyed', entities_destroyed)
     # board_lock.release()
 
 
@@ -116,12 +133,14 @@ async def update_player(player):
             await broadcast_message('entity_created', minion.to_list())
 
 
-async def update_minion(minion_id):
+def update_minion(minion_id):
     path = minions[minion_id]
     if path:
         new_pos = path.pop(0)
         board_move_entity(minion_id, new_pos)
-        await broadcast_message('entity_changed', [minion_id, 'position', new_pos])
+        return [minion_id, 'position', new_pos]
+        # await broadcast_message('entity_changed', )
+    return None
 
 
 async def slow_timer_tick():
@@ -129,33 +148,44 @@ async def slow_timer_tick():
     await send_tick()
     for player_name in players:
         await update_player(players[player_name])
+    entities_changed = []
     for minion in minions:
-        await update_minion(minion)
+        entity_changed = update_minion(minion)
+        if entity_changed is not None:
+            entities_changed.append(entity_changed)
+    if entities_changed:
+        await broadcast_message('entities_changed', entities_changed)
+
     # board_lock.release()
 
 
-async def fire_tower_if_in_range(tower):
+def fire_tower_if_in_range(tower):
     tower_pos = tower.position_tuple()
     tower_range = entities.TOWER_RANGES[tower.typ] * tower.level
     for minion_id in minions.keys():
         minion_pos = board_entities[minion_id].position_tuple()
         if vec.is_within_bounds(minion_pos, tower_pos, tower_range):
-            await actually_fire_the_damn_tower(minion_id, tower)
             print('FIRE!')
-            return
+            return actually_fire_the_damn_tower(minion_id, tower)
+    return None, None, None
 
 
-async def actually_fire_the_damn_tower(minion_id, tower):
+def actually_fire_the_damn_tower(minion_id, tower):
     board_entities[minion_id].health -= tower.level * \
             entities.TOWER_DAMAGES[tower.typ]
-    await broadcast_message('tower_fired', [tower.uid, minion_id])
-    await broadcast_message('entity_changed',
-                            [minion_id, 'health',
-                             board_entities[minion_id].health])
-    print(board_entities[minion_id].health)
+
+    tower_fired = [tower.uid, minion_id]
+    entity_destroyed = None
+    entity_changed = None
+
     if board_entities[minion_id].health <= 0:
         kill_minion_locally(minion_id)
-        await broadcast_message('entity_destroyed', minion_id)
+        entity_destroyed = minion_id
+    else:
+        entity_changed = [minion_id, 'health',
+                          board_entities[minion_id].health]
+
+    return tower_fired, entity_changed, entity_destroyed
 
 
 def kill_minion_locally(minion_id):
