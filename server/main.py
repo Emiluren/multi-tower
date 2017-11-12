@@ -3,6 +3,7 @@ from aiohttp import web
 import vec
 import entities
 import pathfinding
+import math
 
 import socketio
 import asyncio
@@ -76,7 +77,7 @@ async def fast_timer_tick():
                 entities.TOWER_FREQUENCIES[tower.typ] / tower.level
         if ticks >= 1 / TICK_TIME:
             tower_fired, entity_changed, entity_destroyed =\
-                    fire_tower_if_in_range(tower)
+                    await fire_tower_if_in_range(tower)
             if tower_fired is not None:
                 towers_fired.append(tower_fired)
                 if entity_changed is not None:
@@ -203,7 +204,7 @@ async def slow_timer_tick():
     # board_lock.release()
 
 
-def fire_tower_if_in_range(tower):
+async def fire_tower_if_in_range(tower):
     tower_pos = tower.position_tuple()
     tower_range = entities.TOWER_RANGES[tower.typ] * tower.level
     for minion_id in minions.keys():
@@ -211,11 +212,11 @@ def fire_tower_if_in_range(tower):
         if vec.is_within_bounds(minion_pos, tower_pos, tower_range) and \
            board_entities[minion_id].player_name != tower.player_name:
             # print('FIRE!')
-            return actually_fire_the_damn_tower(minion_id, tower)
+            return await actually_fire_the_damn_tower(minion_id, tower)
     return None, None, None
 
 
-def actually_fire_the_damn_tower(minion_id, tower):
+async def actually_fire_the_damn_tower(minion_id, tower):
     board_entities[minion_id].health -= tower.level * \
             entities.TOWER_DAMAGES[tower.typ]
 
@@ -224,8 +225,15 @@ def actually_fire_the_damn_tower(minion_id, tower):
     entity_changed = None
 
     if board_entities[minion_id].health <= 0:
+        # WE KILLED A MINION! CONGRATS!
+        minion = board_entities[minion_id]
+        players[tower.player_name].cash += math.floor(
+            entities.MINION_KILL_REWARD * minion.level)
         kill_minion_locally(minion_id)
         entity_destroyed = minion_id
+        await broadcast_message(
+            'player_cash_changed', [tower.player_name, 
+                                    players[tower.player_name].cash])
     else:
         entity_changed = [minion_id, 'health',
                           board_entities[minion_id].health]
@@ -364,7 +372,9 @@ async def on_request_tower(sid, data):
     x, y, typ = data
     player = find_player(sid)
     cost = entities.TOWER_BUILD_COSTS[typ]
-    if cost <= player.cash:
+    castle_pos = castles[player.name].position_tuple()
+    if cost <= player.cash and \
+       vec.is_within_bounds(castle_pos, (x, y), SPAWN_DISTANCE // 2):
         tower = entities.Entity(x, y, typ, player.name)
         board_add_entity(tower)
         towers[tower.uid] = (tower, 0)
@@ -377,7 +387,8 @@ async def on_request_tower(sid, data):
         await broadcast_message('player_cash_changed',
                                 [player.name, player.cash])
     else:
-        print(player.name + ' cannot afford to build ' + typ)
+        print(player.name + ' cannot afford to build ' + typ + 
+              ' or tried to put the it somewhere illegal')
 
 
 @sio.on('request_upgrade')
