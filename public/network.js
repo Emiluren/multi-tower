@@ -82,6 +82,8 @@ function entity_created(json_msg) {
     m.entity = id;
     entities[id] = entity;
     board_add_entity(id, x, y);
+
+    if (entity.type == 'castle' && entities[id].player_name == me) setHealthbar(entity.health);
 }
 
 function handle_tower_fired(json_msg) {
@@ -103,6 +105,9 @@ function handle_entity_destroyed(msg) {
 
 function entity_destroyed(id) {
     let entity = entities[id];
+    if (selected.id == id) deselect();
+
+    scene.remove(entity.mesh);
     delete entities[id];
 }
 
@@ -118,6 +123,7 @@ function entity_changed(msg) {
     let data = msg[2];
     if (kind == 'health') {
         entities[id].health = data;
+        if (entities[id].type == 'castle' && entities[id].player_name == me) setHealthbar(data);
     } else if (kind == 'position') {
         board_move_entity(id, data[0], data[1]);
         entities[id].x = data[0];
@@ -156,13 +162,18 @@ function request_create_tower(tile_x, tile_y) {
     socket.emit('request_tower', [tile_x, tile_y, 'tower_arrows']);
 }
 
-function request_delete_tower(entity_id) {
+function request_delete(entity_id) {
     socket.emit('request_delete', entity_id);
 }
 
+function request_upgrade(entity_id) {
+    socket.emit('request_upgrade', entity_id);
+}
+
 function connect_to_server() {
-    console.log($('#player_name_text').val());
-    socket = io({ query: { name:  $('#player_name_text').val()} });
+    me = $('#player_name_text').val();
+    console.log('I am: ' + me);
+    socket = io({ query: { name:  me} });
     socket.on('entity_created', entity_created);
     socket.on('entity_destroyed', handle_entity_destroyed);
     socket.on('entity_changed', handle_entity_changed);
